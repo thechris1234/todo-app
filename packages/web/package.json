@@ -1,16 +1,27 @@
 {
     "name": "@todoapp/web",
-    "private": true,
     "version": "0.0.0",
-    "type": "module",
+    "private": true,
+    "keywords": [],
     "license": "ISC",
     "author": "Krisztian Ludvany <ludvany.krisztian@gmail.com>",
+    "type": "module",
     "scripts": {
         "[-] Frontend Development": "",
-        "dev:web": "vite",
         "build:web": "tsc -b && vite build",
+        "dev:web": "vite",
         "lint:web": "eslint .",
         "preview:web": "vite preview"
+    },
+    "prettier": {
+        "arrowParens": "always",
+        "plugins": [
+            "prettier-plugin-tailwindcss"
+        ],
+        "printWidth": 120,
+        "semi": true,
+        "singleQuote": true,
+        "tabWidth": 4
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.11",
@@ -33,19 +44,8 @@
         "typescript-eslint": "^8.35.0",
         "vite": "^7.0.0"
     },
-    "prettier": {
-        "tabWidth": 4,
-        "semi": true,
-        "printWidth": 120,
-        "arrowParens": "always",
-        "singleQuote": true,
-        "plugins": [
-            "prettier-plugin-tailwindcss"
-        ]
-    },
-    "keywords": [],
+    "packageManager": "pnpm@10.12.4",
     "engines": {
         "node": ">=22"
-    },
-    "packageManager": "pnpm@10.12.4"
+    }
 }

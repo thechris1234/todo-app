@@ -2,22 +2,29 @@
     "name": "@todoapp/api",
     "version": "0.0.0",
     "description": "",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
     "keywords": [],
-    "author": "Krisztian Ludvany <ludvany.krisztian@gmail.com>",
     "license": "ISC",
-    "packageManager": "pnpm@10.12.4",
+    "author": "Krisztian Ludvany <ludvany.krisztian@gmail.com>",
+    "main": "main.ts",
+    "scripts": {
+        "[-] Backend Development": "",
+        "dev:api": "ts-node src/main.ts"
+    },
+    "prettier": {
+        "arrowParens": "always",
+        "printWidth": 120,
+        "semi": true,
+        "singleQuote": true,
+        "tabWidth": 4
+    },
     "dependencies": {
         "express": "^5.1.0"
     },
-    "prettier": {
-        "tabWidth": 4,
-        "semi": true,
-        "printWidth": 120,
-        "arrowParens": "always",
-        "singleQuote": true
-    }
+    "devDependencies": {
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.0.4",
+        "ts-node": "^10.9.2",
+        "typescript": "~5.8.3"
+    },
+    "packageManager": "pnpm@10.12.4"
 }
