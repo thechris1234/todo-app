@@ -1,0 +1,23 @@
+{
+    "name": "@todoapp/api",
+    "version": "0.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "Krisztian Ludvany <ludvany.krisztian@gmail.com>",
+    "license": "ISC",
+    "packageManager": "pnpm@10.12.4",
+    "dependencies": {
+        "express": "^5.1.0"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "semi": true,
+        "printWidth": 120,
+        "arrowParens": "always",
+        "singleQuote": true
+    }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "todo-app",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "version": "0.0.0",
+  "description": "simple todo app.",
+  "scripts": {
+    "[-] Deployment Commands": "",
+    "[-] Backend Development": "",
+    "dev:api": "pnpm --filter @todoapp/api dev",
+    "[-] Frontend Development": "",
+    "dev:web": "pnpm --filter @todoapp/web dev:web",
+    "preview:web": "pnpm --filter @todoapp/web preview:web",
+    "build:web": "pnpm --filter @todoapp/web build:web",
+    "lint:web": "pnpm --filter @todoapp/web lint:web"
+  },
+  "keywords": [],
+  "author": "Krisztian Ludvany <ludvany.krisztian@gmail.com>",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.12.4"
+}
