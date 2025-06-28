@@ -1,4 +1,11 @@
 import { HiPlus } from 'react-icons/hi';
+import { MdMoreHoriz } from 'react-icons/md';
+
+import { formatTimestampIntl } from './utils/time';
+
+import CheckBox from './components/checkbox';
+import StatusTag from './components/status-tag';
+import PriorityTag from './components/priority-tag';
 
 function App() {
     return (
@@ -37,34 +44,54 @@ function App() {
                         <table className="w-full">
                             <thead className="border-b border-gray-200 bg-gray-50">
                                 <tr>
-                                    <th className="p-4 text-left font-medium text-gray-900">Task</th>
-                                    <th className="p-4 text-left font-medium text-gray-900">Status</th>
-                                    <th className="p-4 text-left font-medium text-gray-900">Due Date</th>
-                                    <th className="p-4 text-left font-medium text-gray-900">Priority</th>
-                                    <th className="p-4 text-left font-medium text-gray-900">Actions</th>
+                                    <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
+                                        <CheckBox checked={false} isIndeterminate={true}></CheckBox>
+                                    </th>
+                                    <th className="py-3 pr-4 pl-2 text-left font-medium text-gray-900">Task</th>
+                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Status</th>
+                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Priority</th>
+                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Due Date</th>
+                                    <th className="w-0 px-4 py-3 text-left font-medium text-gray-900">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="text-black">
                                 <tr className="not-last:border-b not-last:border-gray-200 hover:bg-gray-50">
-                                    <td className="p-4">
-                                        <div className="flex items-start gap-3">
-                                            <input
-                                                id="todo-1"
-                                                type="checkbox"
-                                                className="peer mt-1 size-4 shrink-0 cursor-pointer appearance-none rounded-sm border border-gray-600 transition-colors checked:appearance-auto checked:accent-gray-900"
-                                            ></input>
-                                            <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
-                                                <h3 className="font-medium text-gray-900 line-through decoration-transparent transition-colors">
-                                                    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                                </h3>
-                                                <span className="mt-1 text-sm text-gray-600">asd</span>
-                                            </div>
+                                    <td className="py-4 pr-2 pl-4">
+                                        <CheckBox checked={true}></CheckBox>
+                                    </td>
+                                    <td className="py-4 pr-4 pl-2">
+                                        <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
+                                            <h3 className="font-medium text-gray-900 line-through decoration-transparent transition-colors">
+                                                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                            </h3>
+                                            <span className="mt-1 text-sm text-gray-600">asd</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">asd</td>
-                                    <td className="p-4">asd</td>
-                                    <td className="p-4">asd</td>
-                                    <td className="p-4">asd</td>
+                                    <td className="p-4">
+                                        <StatusTag type="new" />
+                                        <StatusTag type="inProgress" />
+                                        <StatusTag type="done" />
+                                        <StatusTag type="blocked" />
+                                        <StatusTag type="overdue" />
+                                    </td>
+                                    <td className="p-4">
+                                        <PriorityTag type="low" />
+                                        <PriorityTag type="normal" />
+                                        <PriorityTag type="high" />
+                                        <PriorityTag type="important" />
+                                    </td>
+                                    <td className="p-4">
+                                        {formatTimestampIntl(1519129853500, undefined, {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
+                                    </td>
+                                    <td className="place-items-center">
+                                        <MdMoreHoriz />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
