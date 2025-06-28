@@ -1,4 +1,4 @@
-import { HiPlus } from 'react-icons/hi';
+import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
 import { MdMoreHoriz } from 'react-icons/md';
 
 import { formatTimestampIntl } from './utils/time';
@@ -47,19 +47,32 @@ function App() {
                                     <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
                                         <CheckBox checked={false} isIndeterminate={true}></CheckBox>
                                     </th>
-                                    <th className="py-3 pr-4 pl-2 text-left font-medium text-gray-900">Task</th>
-                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Status</th>
-                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Priority</th>
-                                    <th className="px-4 py-3 text-left font-medium text-gray-900">Due Date</th>
-                                    <th className="w-0 px-4 py-3 text-left font-medium text-gray-900">Actions</th>
+                                    <th className="py-3 pr-3 pl-2 text-left font-medium text-gray-900">
+                                        <span>Task</span>
+                                    </th>
+                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                        <HiOutlineChartPie className="inline-block align-middle" />
+                                        <span className="inline-block align-middle">Status</span>
+                                    </th>
+                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                        <HiOutlineChartBar className="inline-block align-middle" />
+                                        <span className="inline-block align-middle">Priority</span>
+                                    </th>
+                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                        <HiOutlineCalendar className="inline-block align-middle" />
+                                        <span className="inline-block align-middle">Due Date</span>
+                                    </th>
+                                    <th className="w-0 py-3 pr-4 pl-3 text-left font-medium text-gray-900">
+                                        <span>Actions</span>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="text-black">
                                 <tr className="not-last:border-b not-last:border-gray-200 hover:bg-gray-50">
-                                    <td className="py-4 pr-2 pl-4">
+                                    <td className="py-3 pr-2 pl-4">
                                         <CheckBox checked={true}></CheckBox>
                                     </td>
-                                    <td className="py-4 pr-4 pl-2">
+                                    <td className="py-3 pr-3 pl-2">
                                         <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
                                             <h3 className="font-medium text-gray-900 line-through decoration-transparent transition-colors">
                                                 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -67,20 +80,13 @@ function App() {
                                             <span className="mt-1 text-sm text-gray-600">asd</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">
-                                        <StatusTag type="new" />
+                                    <td className="p-3">
                                         <StatusTag type="inProgress" />
-                                        <StatusTag type="done" />
-                                        <StatusTag type="blocked" />
-                                        <StatusTag type="overdue" />
                                     </td>
-                                    <td className="p-4">
-                                        <PriorityTag type="low" />
-                                        <PriorityTag type="normal" />
-                                        <PriorityTag type="high" />
+                                    <td className="p-3">
                                         <PriorityTag type="important" />
                                     </td>
-                                    <td className="p-4">
+                                    <td className="p-3">
                                         {formatTimestampIntl(1519129853500, undefined, {
                                             year: 'numeric',
                                             month: '2-digit',
@@ -89,7 +95,7 @@ function App() {
                                             minute: '2-digit',
                                         })}
                                     </td>
-                                    <td className="place-items-center">
+                                    <td className="place-items-center py-3 pr-4 pl-3">
                                         <MdMoreHoriz />
                                     </td>
                                 </tr>

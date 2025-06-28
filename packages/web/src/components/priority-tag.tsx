@@ -22,7 +22,7 @@ export default function PriorityTag(props: PriorityProps) {
             )}
         >
             <tagStyle.icon />
-            <span className="">{tagStyle.title}</span>
+            <span>{tagStyle.title}</span>
         </div>
     );
 }
