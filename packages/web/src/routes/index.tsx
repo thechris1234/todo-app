@@ -16,7 +16,7 @@ type TaskFilters = {
 };
 
 export const Route = createFileRoute('/')({
-    validateSearch: (q: Record<string, unknown>): TaskFilters => {
+    validateSearch: (q: Record<string, string>): TaskFilters => {
         return {
             search: typeof q.search === 'string' ? q.search : '',
             status: typeof q.status === 'string' ? (q.status as StatusTag) : undefined,
