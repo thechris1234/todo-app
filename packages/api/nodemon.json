@@ -1,0 +1,6 @@
+{
+    "verbose": false,
+    "ext": "ts,tsx,js,jsx,json",
+    "watch": ["./src", "./src-webviews"],
+    "ignore": ["*/package.json", "*.mjs"]
+}
