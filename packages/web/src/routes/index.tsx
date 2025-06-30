@@ -1,13 +1,58 @@
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
+
+import { demoTasks } from '../information/demo';
+import type { TaskType } from '../types/task-type';
+import type { StatusTag } from '../types/status-type';
+
+import Checkbox from '../components/checkbox';
+import Task from '../components/task';
+import Input from '../components/input';
+
 import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
-import { MdMoreHoriz } from 'react-icons/md';
 
-import { formatTimestampIntl } from './utils/time';
+type TaskFilters = {
+    search?: string;
+    status?: StatusTag;
+};
 
-import CheckBox from './components/checkbox';
-import StatusTag from './components/status-tag';
-import PriorityTag from './components/priority-tag';
+export const Route = createFileRoute('/')({
+    validateSearch: (q: Record<string, unknown>): TaskFilters => {
+        return {
+            search: typeof q.search === 'string' ? q.search : '',
+            status: typeof q.status === 'string' ? (q.status as StatusTag) : undefined,
+        };
+    },
+    component: Index,
+});
 
-function App() {
+function Index() {
+    const navigate = useNavigate();
+    const { search, status } = useSearch({ from: '/' });
+
+    const handleSearchChange = (value: string) => {
+        navigate({
+            search: (prev: TaskFilters) => {
+                const newSearch = { ...prev };
+
+                if (value.trim() === '') {
+                    delete newSearch.search;
+                } else {
+                    newSearch.search = value;
+                }
+
+                return newSearch;
+            },
+        });
+    };
+
+    const filteredTasks = demoTasks.filter((task) => {
+        const taskName = task.title.toLocaleLowerCase();
+        const matchesSearch = search ? taskName.includes(search.toLowerCase()) : true;
+        const matchesStatus = status ? task.status === status : true;
+
+        return matchesSearch && matchesStatus;
+    });
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
             <div className="mx-auto max-w-7xl">
@@ -37,7 +82,17 @@ function App() {
                         </div>
                     </div>
 
-                    <div className="text-black">search tasks... | filter button</div>
+                    <div className="flex flex-col gap-4 text-black sm:flex-row">
+                        <Input
+                            id="task-search-input"
+                            type="text"
+                            placeholder="Search tasks..."
+                            icon="search"
+                            value={search ?? ''}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            full
+                        />
+                    </div>
                 </div>
                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                     <div className="overflow-x-auto">
@@ -45,7 +100,7 @@ function App() {
                             <thead className="border-b border-gray-200 bg-gray-50">
                                 <tr>
                                     <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
-                                        <CheckBox checked={false} isIndeterminate={true}></CheckBox>
+                                        <Checkbox checked={false} isIndeterminate={true} />
                                     </th>
                                     <th className="py-3 pr-3 pl-2 text-left font-medium text-gray-900">
                                         <span>Task</span>
@@ -67,38 +122,10 @@ function App() {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="text-black">
-                                <tr className="not-last:border-b not-last:border-gray-200 hover:bg-gray-50">
-                                    <td className="py-3 pr-2 pl-4">
-                                        <CheckBox checked={true}></CheckBox>
-                                    </td>
-                                    <td className="py-3 pr-3 pl-2">
-                                        <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
-                                            <h3 className="font-medium text-gray-900 line-through decoration-transparent transition-colors">
-                                                aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                            </h3>
-                                            <span className="mt-1 text-sm text-gray-600">asd</span>
-                                        </div>
-                                    </td>
-                                    <td className="p-3">
-                                        <StatusTag type="inProgress" />
-                                    </td>
-                                    <td className="p-3">
-                                        <PriorityTag type="important" />
-                                    </td>
-                                    <td className="p-3">
-                                        {formatTimestampIntl(1519129853500, undefined, {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })}
-                                    </td>
-                                    <td className="place-items-center py-3 pr-4 pl-3">
-                                        <MdMoreHoriz />
-                                    </td>
-                                </tr>
+                            <tbody>
+                                {filteredTasks.map((task: TaskType) => {
+                                    return <Task key={task.id} options={task} />;
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -107,5 +134,3 @@ function App() {
         </div>
     );
 }
-
-export default App;

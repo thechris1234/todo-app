@@ -1,7 +1,7 @@
 import { cn } from '../utils/cn';
 
-import type { StatusTag } from '../information/status-type';
-import { StatusStyles } from '../information/status-type';
+import type { StatusTag } from '../types/status-type';
+import { StatusStyles } from '../information/statuses';
 
 type StatusProps = {
     type: StatusTag;

@@ -1,15 +1,5 @@
-import type { IconType } from 'react-icons';
+import type { StatusStyleProps, StatusTag } from '../types/status-type';
 import { HiOutlineTag, HiOutlineTicket, HiOutlineBadgeCheck, HiOutlineSupport, HiOutlineClock } from 'react-icons/hi';
-
-export type StatusTag = 'new' | 'inProgress' | 'done' | 'blocked' | 'overdue';
-
-export type StatusStyleProps = {
-    title: string;
-    icon: IconType;
-    text: string;
-    bg: string;
-    border: string;
-};
 
 export const StatusStyles: Record<StatusTag, StatusStyleProps> = {
     new: {

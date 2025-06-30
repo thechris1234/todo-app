@@ -1,15 +1,5 @@
-import type { IconType } from 'react-icons';
+import type { PriorityStyleProps, PriorityTag } from '../types/priority-type';
 import { HiChevronDown, HiMinusSm, HiChevronUp, HiChevronDoubleUp } from 'react-icons/hi';
-
-export type PriorityTag = 'low' | 'normal' | 'high' | 'important';
-
-export type PriorityStyleProps = {
-    title: string;
-    icon: IconType;
-    text: string;
-    bg: string;
-    border: string;
-};
 
 export const PriorityStyles: Record<PriorityTag, PriorityStyleProps> = {
     low: {

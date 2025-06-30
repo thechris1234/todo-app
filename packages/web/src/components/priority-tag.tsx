@@ -1,7 +1,7 @@
 import { cn } from '../utils/cn';
 
-import type { PriorityTag } from '../information/priority-type';
-import { PriorityStyles } from '../information/priority-type';
+import type { PriorityTag } from '../types/priority-type';
+import { PriorityStyles } from '../information/priorities';
 
 type PriorityProps = {
     type: PriorityTag;
