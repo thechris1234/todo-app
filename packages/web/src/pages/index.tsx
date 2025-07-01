@@ -8,6 +8,8 @@ import Task from '../components/task';
 import Input from '../components/input';
 
 import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
+import Button from '../components/button';
+import Dropdown, { DropDownItem } from '../components/dropdown';
 
 export default function Index() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -51,20 +53,17 @@ export default function Index() {
                             <button className="flex items-center gap-2 px-4 whitespace-nowrap">
                                 <img
                                     src="https://i.imgur.com/5WXqSz7.jpeg"
-                                    className="flex aspect-square size-10 shrink-0 rounded-full"
+                                    className="flex aspect-square size-8 shrink-0 rounded-full"
                                     alt="Profile picture"
                                 ></img>
 
-                                <span className="hidden text-gray-900 sm:inline">Teszt Lajos</span>
+                                <span className="hidden text-sm text-gray-900 sm:inline">Teszt Lajos</span>
                             </button>
-                            <button className="flex cursor-pointer items-center gap-2 rounded-md bg-purple-600 px-4 py-2 whitespace-nowrap transition-colors hover:bg-purple-700">
-                                <HiPlus />
-                                <span className="text-gray-100">New Task</span>
-                            </button>
+                            <Button text="New Task" icon="new" />
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-4 text-black sm:flex-row">
+                    <div className="flex flex-col items-center gap-4 text-black sm:flex-row">
                         <Input
                             id="task-search-input"
                             type="text"
@@ -74,6 +73,10 @@ export default function Index() {
                             onChange={(e) => handleSearchChange(e.target.value)}
                             full
                         />
+
+                        <Dropdown text="Dropdown" open={false}>
+                            <DropDownItem />
+                        </Dropdown>
                     </div>
                 </div>
                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
