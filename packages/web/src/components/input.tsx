@@ -55,7 +55,7 @@ export default function Input(props: InputProps) {
             </div>
 
             {props.error && props.errorText && (
-                <span className="invisible peer-invalid:visible ...">Please provide a valid email address.</span>
+                <span className="invisible peer-invalid:visible ...">{props.errorText}</span>
             )}
         </div>
     );

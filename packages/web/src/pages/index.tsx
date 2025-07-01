@@ -1,8 +1,7 @@
-import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
+import { useSearchParams } from 'react-router';
 
 import { demoTasks } from '../information/demo';
 import type { TaskType } from '../types/task-type';
-import type { StatusTag } from '../types/status-type';
 
 import Checkbox from '../components/checkbox';
 import Task from '../components/task';
@@ -10,39 +9,22 @@ import Input from '../components/input';
 
 import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
 
-type TaskFilters = {
-    search?: string;
-    status?: StatusTag;
-};
+export default function Index() {
+    const [searchParams, setSearchParams] = useSearchParams();
 
-export const Route = createFileRoute('/')({
-    validateSearch: (q: Record<string, string>): TaskFilters => {
-        return {
-            search: typeof q.search === 'string' ? q.search : '',
-            status: typeof q.status === 'string' ? (q.status as StatusTag) : undefined,
-        };
-    },
-    component: Index,
-});
-
-function Index() {
-    const navigate = useNavigate();
-    const { search, status } = useSearch({ from: '/' });
+    const search = searchParams.get('search');
+    const status = searchParams.get('status');
 
     const handleSearchChange = (value: string) => {
-        navigate({
-            search: (prev: TaskFilters) => {
-                const newSearch = { ...prev };
+        const params = new URLSearchParams(searchParams);
 
-                if (value.trim() === '') {
-                    delete newSearch.search;
-                } else {
-                    newSearch.search = value;
-                }
+        if (value.trim() === '') {
+            params.delete('search');
+        } else {
+            params.set('search', value);
+        }
 
-                return newSearch;
-            },
-        });
+        setSearchParams(params);
     };
 
     const filteredTasks = demoTasks.filter((task) => {
