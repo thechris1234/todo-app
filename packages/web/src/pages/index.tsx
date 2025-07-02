@@ -1,17 +1,22 @@
+import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { demoTasks } from '../information/demo';
+import { StatusStyles } from '../information/statuses';
+
 import type { TaskType } from '../types/task-type';
+import type { StatusTag } from '../types/status-type';
 
 import Checkbox from '../components/checkbox';
 import Task from '../components/task';
 import Input from '../components/input';
-
-import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie, HiPlus } from 'react-icons/hi';
 import Button from '../components/button';
-import Dropdown, { DropDownItem } from '../components/dropdown';
+import Dropdown, { DropdownItem } from '../components/dropdown';
+
+import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie } from 'react-icons/hi';
 
 export default function Index() {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const search = searchParams.get('search');
@@ -24,6 +29,18 @@ export default function Index() {
             params.delete('search');
         } else {
             params.set('search', value);
+        }
+
+        setSearchParams(params);
+    };
+
+    const handleStatusChange = (value: string) => {
+        const params = new URLSearchParams(searchParams);
+
+        if (value === status) {
+            params.delete('status');
+        } else {
+            params.set('status', value);
         }
 
         setSearchParams(params);
@@ -74,8 +91,26 @@ export default function Index() {
                             full
                         />
 
-                        <Dropdown text="Dropdown" open={false}>
-                            <DropDownItem />
+                        <Dropdown
+                            id="task-status-filter"
+                            text={status ? StatusStyles[status as StatusTag].title : 'All Tasks'}
+                            icon="filter"
+                            open={isDropdownOpen}
+                            onClick={() => setIsDropdownOpen((prev) => !prev)}
+                            onBlur={() => setIsDropdownOpen(false)}
+                            customStyle="w-48"
+                        >
+                            {Object.keys(StatusStyles).map((statusKey) => {
+                                return (
+                                    <DropdownItem
+                                        key={statusKey}
+                                        id={statusKey}
+                                        text={StatusStyles[statusKey as StatusTag].title}
+                                        onClick={() => handleStatusChange(statusKey)}
+                                        selected={statusKey === status}
+                                    />
+                                );
+                            })}
                         </Dropdown>
                     </div>
                 </div>
@@ -108,9 +143,17 @@ export default function Index() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredTasks.map((task: TaskType) => {
-                                    return <Task key={task.id} options={task} />;
-                                })}
+                                {filteredTasks.length <= 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="py-12 text-center text-gray-500">
+                                            No tasks found matching your criteria.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredTasks.map((task: TaskType) => {
+                                        return <Task key={task.id} options={task} />;
+                                    })
+                                )}
                             </tbody>
                         </table>
                     </div>

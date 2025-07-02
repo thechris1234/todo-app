@@ -22,16 +22,13 @@ export default function Button(props: ButtonProps) {
     return (
         <button
             className={cn(
-                'text- flex cursor-pointer items-center gap-3.5 rounded-md bg-purple-600 px-4 py-2 text-sm whitespace-nowrap transition-colors hover:bg-purple-700',
+                'flex cursor-pointer items-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm whitespace-nowrap transition-colors hover:bg-purple-700',
                 props.customStyle,
             )}
             onClick={props.onClick}
         >
-            {props.icon && IconComponent && (
-                <div className="">
-                    <IconComponent />
-                </div>
-            )}
+            {props.icon && IconComponent && <IconComponent className="size-4" />}
+
             <span className="text-gray-100">{props.text}</span>
         </button>
     );

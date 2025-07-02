@@ -36,8 +36,8 @@ export default function Input(props: InputProps) {
         >
             <div className="relative block">
                 {props.icon && IconComponent && (
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-2.5">
-                        <IconComponent className="text-gray-600" />
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <IconComponent className="size-4 text-gray-600" />
                     </div>
                 )}
 
@@ -49,7 +49,7 @@ export default function Input(props: InputProps) {
                     onChange={props.onChange}
                     maxLength={props.maxLength}
                     className={cn(
-                        'block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2.5 pr-3 pl-9 text-sm text-gray-900 placeholder:text-gray-400 placeholder:italic focus:border-gray-400 focus:outline focus:outline-gray-400 sm:text-sm',
+                        'block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2.5 pr-3 pl-10 text-sm text-gray-900 placeholder:text-gray-400 placeholder:italic focus:border-gray-400 focus:outline focus:outline-gray-400',
                     )}
                 ></input>
             </div>
