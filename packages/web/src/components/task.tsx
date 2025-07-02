@@ -13,6 +13,40 @@ type TaskProps = {
 };
 
 export default function Task(props: TaskProps) {
+    const handleTimestampDisplay = () => {
+        const time = props.options.dueDate;
+        const isAllDay = props.options.allDay;
+
+        const date = new Date(time);
+        const now = new Date();
+
+        const isToday =
+            date.getFullYear() === now.getFullYear() &&
+            date.getMonth() === now.getMonth() &&
+            date.getDate() === now.getDate();
+
+        if (isToday) {
+            return `Today${
+                !isAllDay
+                    ? `, ${formatTimestampIntl(time, 'hu-HU', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                      })}`
+                    : ''
+            }`;
+        }
+
+        return formatTimestampIntl(time, 'hu-HU', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            ...(!isAllDay && {
+                hour: '2-digit',
+                minute: '2-digit',
+            }),
+        });
+    };
+
     return (
         <tr className="not-last:border-b not-last:border-gray-200 hover:bg-gray-50">
             <td className="py-3 pr-2 pl-4">
@@ -20,7 +54,7 @@ export default function Task(props: TaskProps) {
             </td>
             <td className="py-3 pr-3 pl-2">
                 <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
-                    <h3 className="font-medium text-gray-900 line-through decoration-transparent transition-colors">
+                    <h3 className="font-medium whitespace-nowrap text-gray-900 line-through decoration-transparent transition-colors">
                         {props.options.title}
                     </h3>
                     {props.options.desc && <span className="mt-1 text-sm text-gray-600">{props.options.desc}</span>}
@@ -33,18 +67,12 @@ export default function Task(props: TaskProps) {
                 <PriorityTag type={props.options.priority} />
             </td>
             <td className="p-3">
-                <span className="text-gray-900">
-                    {formatTimestampIntl(props.options.dueDate, undefined, {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    })}
-                </span>
+                <span className="whitespace-nowrap text-gray-900">{handleTimestampDisplay()}</span>
             </td>
-            <td className="place-items-center py-3 pr-4 pl-3 text-gray-900">
-                <MdMoreHoriz />
+            <td className="py-3 pr-4 pl-3 text-center text-gray-900">
+                <div className="inline-flex size-10 cursor-pointer items-center justify-center rounded-md hover:bg-gray-200">
+                    <MdMoreHoriz />
+                </div>
             </td>
         </tr>
     );

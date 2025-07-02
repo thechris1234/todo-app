@@ -13,7 +13,7 @@ export default function StatusTag(props: StatusProps) {
     return (
         <div
             className={cn(
-                'flex w-fit items-center gap-2 rounded-lg border border-gray-700 bg-gray-300 px-2 text-gray-700',
+                'flex w-fit items-center gap-2 rounded-lg border border-gray-700 bg-gray-300 px-2 whitespace-nowrap text-gray-700',
                 {
                     [tagStyle.text]: tagStyle?.text,
                     [tagStyle.bg]: tagStyle?.bg,

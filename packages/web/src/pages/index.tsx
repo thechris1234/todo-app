@@ -93,19 +93,19 @@ export default function Index() {
 
                         <Dropdown
                             id="task-status-filter"
-                            text={status ? StatusStyles[status as StatusTag].title : 'All Tasks'}
+                            text={status ? StatusStyles[status as StatusTag]?.title : 'All Tasks'}
                             icon="filter"
                             open={isDropdownOpen}
                             onClick={() => setIsDropdownOpen((prev) => !prev)}
                             onBlur={() => setIsDropdownOpen(false)}
-                            customStyle="w-48"
+                            customStyle="w-full sm:w-48"
                         >
                             {Object.keys(StatusStyles).map((statusKey) => {
                                 return (
                                     <DropdownItem
                                         key={statusKey}
                                         id={statusKey}
-                                        text={StatusStyles[statusKey as StatusTag].title}
+                                        text={StatusStyles[statusKey as StatusTag]?.title}
                                         onClick={() => handleStatusChange(statusKey)}
                                         selected={statusKey === status}
                                     />
@@ -133,7 +133,7 @@ export default function Index() {
                                         <HiOutlineChartBar className="inline-block align-middle" />
                                         <span className="inline-block align-middle">Priority</span>
                                     </th>
-                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                    <th className="space-x-2 px-3 py-3 text-left font-medium whitespace-nowrap text-gray-900">
                                         <HiOutlineCalendar className="inline-block align-middle" />
                                         <span className="inline-block align-middle">Due Date</span>
                                     </th>

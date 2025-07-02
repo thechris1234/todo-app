@@ -47,7 +47,7 @@ export default function Dropdown(props: DropdownProps) {
     }, [props.open]);
 
     return (
-        <div ref={dropdownRef} className="relative inline-block">
+        <div ref={dropdownRef} className="relative inline-block w-full sm:w-fit">
             <button
                 id={'menu-' + (props.id ?? 'button')}
                 type="button"

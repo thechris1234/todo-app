@@ -8,4 +8,5 @@ export type TaskType = {
     status: StatusTag;
     priority: PriorityTag;
     dueDate: number;
+    allDay: boolean;
 };
