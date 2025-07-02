@@ -98,7 +98,7 @@ export default function Index() {
                             open={isDropdownOpen}
                             onClick={() => setIsDropdownOpen((prev) => !prev)}
                             onBlur={() => setIsDropdownOpen(false)}
-                            customStyle="w-full sm:w-48"
+                            customStyle="w-full sm:w-48 pl-4"
                         >
                             {Object.keys(StatusStyles).map((statusKey) => {
                                 return (
@@ -117,7 +117,7 @@ export default function Index() {
                 <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                     <div className="overflow-x-auto">
                         <table className="w-full">
-                            <thead className="border-b border-gray-200 bg-gray-50">
+                            <thead className="sticky top-0 z-[5] border-b border-gray-200 bg-gray-50">
                                 <tr>
                                     <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
                                         <Checkbox checked={false} isIndeterminate={true} />

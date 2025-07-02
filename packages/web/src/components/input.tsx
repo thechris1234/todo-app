@@ -49,7 +49,7 @@ export default function Input(props: InputProps) {
                     onChange={props.onChange}
                     maxLength={props.maxLength}
                     className={cn(
-                        'block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2.5 pr-3 pl-10 text-sm text-gray-900 placeholder:text-gray-400 placeholder:italic focus:border-gray-400 focus:outline focus:outline-gray-400',
+                        'block w-full rounded-md border border-gray-200 bg-transparent px-3 py-2.5 pr-3 pl-10 text-sm text-gray-900 transition-colors placeholder:text-gray-400 placeholder:italic focus:border-gray-400 focus:outline focus:outline-gray-400',
                     )}
                 ></input>
             </div>

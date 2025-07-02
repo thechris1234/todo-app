@@ -1,4 +1,4 @@
-import { MdMoreHoriz } from 'react-icons/md';
+import { useState } from 'react';
 
 import { formatTimestampIntl } from '../utils/time';
 import Checkbox from './checkbox';
@@ -6,6 +6,7 @@ import StatusTag from './status-tag';
 import PriorityTag from './priority-tag';
 
 import type { TaskType } from '../types/task-type';
+import Dropdown, { DropdownItem } from './dropdown';
 
 type TaskProps = {
     options: TaskType;
@@ -13,6 +14,8 @@ type TaskProps = {
 };
 
 export default function Task(props: TaskProps) {
+    const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
+
     const handleTimestampDisplay = () => {
         const time = props.options.dueDate;
         const isAllDay = props.options.allDay;
@@ -70,9 +73,22 @@ export default function Task(props: TaskProps) {
                 <span className="whitespace-nowrap text-gray-900">{handleTimestampDisplay()}</span>
             </td>
             <td className="py-3 pr-4 pl-3 text-center text-gray-900">
-                <div className="inline-flex size-10 cursor-pointer items-center justify-center rounded-md hover:bg-gray-200">
-                    <MdMoreHoriz />
-                </div>
+                <Dropdown
+                    id="task-status-filter"
+                    text={''}
+                    icon="dots"
+                    open={isActionMenuOpen} //isActionMenuOpen
+                    disableChevron
+                    onClick={() => setIsActionMenuOpen((prev) => !prev)}
+                    onBlur={() => setIsActionMenuOpen(false)}
+                    customStyle="hover:bg-gray-100 focus:border-transparent focus:outline-transparent border-transparent"
+                >
+                    {/* {Object.keys(StatusStyles).map((statusKey) => {
+                                                return ( */}
+                    <DropdownItem key={'asd'} id={'asd'} text={'asd'} onClick={() => {}} selected={false} />
+                    {/*   );
+                                            })} */}
+                </Dropdown>
             </td>
         </tr>
     );

@@ -22,6 +22,7 @@ export default function StatusTag(props: StatusProps) {
             )}
         >
             <tagStyle.icon />
+
             <span>{tagStyle.title}</span>
         </div>
     );
