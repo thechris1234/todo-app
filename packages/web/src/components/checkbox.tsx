@@ -16,7 +16,9 @@ export default function Checkbox(props: CheckboxProps) {
         <div
             className={cn(
                 'relative flex size-[1.125rem] items-center justify-center rounded-sm border border-gray-600',
-                props.checked || (props.isIndeterminate && 'bg-gray-900'),
+                {
+                    'bg-gray-900': props.checked || props.isIndeterminate,
+                },
             )}
         >
             <motion.div

@@ -7,10 +7,11 @@ import PriorityTag from './priority-tag';
 
 import type { TaskType } from '../types/task-type';
 import Dropdown, { DropdownItem } from './dropdown';
+import { cn } from '../utils/cn';
 
 type TaskProps = {
     options: TaskType;
-    selected?: boolean;
+    onCheckBoxChange?: () => void;
 };
 
 export default function Task(props: TaskProps) {
@@ -52,21 +53,36 @@ export default function Task(props: TaskProps) {
 
     return (
         <tr className="not-last:border-b not-last:border-gray-200 hover:bg-gray-50">
-            <td className="py-3 pr-2 pl-4">
-                <Checkbox checked={props.selected || false} />
+            <td
+                className={cn('py-3 pr-2 pl-4', {
+                    'mt-1 inline-flex': props.options.desc,
+                })}
+            >
+                <Checkbox checked={props.options.completed ?? false} onChange={props.onCheckBoxChange} />
             </td>
             <td className="py-3 pr-3 pl-2">
-                <div className="flex flex-col transition-colors peer-checked:[&>h3]:text-gray-400 peer-checked:[&>h3]:decoration-gray-600">
-                    <h3 className="font-medium whitespace-nowrap text-gray-900 line-through decoration-transparent transition-colors">
-                        {props.options.title}
-                    </h3>
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                        <PriorityTag type={props.options.priority} className="h-fit sm:hidden" />
+                        <h3
+                            className={cn(
+                                'font-medium whitespace-nowrap text-gray-900 line-through decoration-transparent transition-colors',
+                                {
+                                    'text-gray-500 decoration-gray-500': props.options.completed,
+                                },
+                            )}
+                        >
+                            {props.options.title}
+                        </h3>
+                    </div>
+
                     {props.options.desc && <span className="mt-1 text-sm text-gray-600">{props.options.desc}</span>}
                 </div>
             </td>
             <td className="p-3">
                 <StatusTag type={props.options.status} />
             </td>
-            <td className="p-3">
+            <td className="hidden p-3 sm:table-cell">
                 <PriorityTag type={props.options.priority} />
             </td>
             <td className="p-3">
@@ -83,11 +99,20 @@ export default function Task(props: TaskProps) {
                     onBlur={() => setIsActionMenuOpen(false)}
                     customStyle="hover:bg-gray-100 focus:border-transparent focus:outline-transparent border-transparent"
                 >
-                    {/* {Object.keys(StatusStyles).map((statusKey) => {
-                                                return ( */}
-                    <DropdownItem key={'asd'} id={'asd'} text={'asd'} onClick={() => {}} selected={false} />
-                    {/*   );
-                                            })} */}
+                    <DropdownItem
+                        id={'task-action-edit'}
+                        text={'Edit task'}
+                        onClick={() => {}}
+                        iconOptions={{ icon: 'edit', alwaysActive: true }}
+                    />
+
+                    <DropdownItem
+                        id={'task-action-delete'}
+                        text={'Delete task'}
+                        onClick={() => {}}
+                        customColors={{ text: 'text-red-900', icon: 'text-red-900' }}
+                        iconOptions={{ icon: 'trash', alwaysActive: true }}
+                    />
                 </Dropdown>
             </td>
         </tr>

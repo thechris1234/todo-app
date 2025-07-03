@@ -129,7 +129,7 @@ export default function Index() {
                                         <HiOutlineChartPie className="inline-block align-middle" />
                                         <span className="inline-block align-middle">Status</span>
                                     </th>
-                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                    <th className="hidden space-x-2 px-3 py-3 text-left font-medium text-gray-900 sm:block">
                                         <HiOutlineChartBar className="inline-block align-middle" />
                                         <span className="inline-block align-middle">Priority</span>
                                     </th>
@@ -151,7 +151,17 @@ export default function Index() {
                                     </tr>
                                 ) : (
                                     filteredTasks.map((task: TaskType) => {
-                                        return <Task key={task.id} options={task} />;
+                                        return (
+                                            <Task
+                                                key={task.id}
+                                                options={task}
+                                                onCheckBoxChange={() => {
+                                                    console.log(
+                                                        `Task '${task.title}' completed status now: ${!task.completed}`,
+                                                    );
+                                                }}
+                                            />
+                                        );
                                     })
                                 )}
                             </tbody>

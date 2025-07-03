@@ -9,4 +9,5 @@ export type TaskType = {
     priority: PriorityTag;
     dueDate: number;
     allDay: boolean;
+    completed: boolean;
 };

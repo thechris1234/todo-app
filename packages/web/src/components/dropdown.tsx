@@ -2,9 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from '../utils/cn';
 
 import type { IconType } from 'react-icons';
-import { HiCheck, HiOutlineFilter, HiChevronDown, HiChevronUp, HiOutlineDotsHorizontal } from 'react-icons/hi';
+import {
+    HiCheck,
+    HiOutlineFilter,
+    HiChevronDown,
+    HiChevronUp,
+    HiOutlineDotsHorizontal,
+    HiOutlinePencilAlt,
+    HiOutlineTrash,
+} from 'react-icons/hi';
 
-type ValidIcon = 'filter' | 'dots';
+type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash';
 
 type DropdownProps = {
     id?: string;
@@ -22,7 +30,22 @@ type DropdownItemProps = {
     id: string;
     text: string;
     selected?: boolean;
+    customColors?: {
+        text?: string;
+        icon?: string;
+    };
+    iconOptions?: {
+        icon?: ValidIcon;
+        alwaysActive?: boolean;
+    };
     onClick?: () => void;
+};
+
+const iconMap: Record<ValidIcon, IconType> = {
+    filter: HiOutlineFilter,
+    dots: HiOutlineDotsHorizontal,
+    edit: HiOutlinePencilAlt,
+    trash: HiOutlineTrash,
 };
 
 export default function Dropdown(props: DropdownProps) {
@@ -31,11 +54,6 @@ export default function Dropdown(props: DropdownProps) {
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const iconMap: Record<ValidIcon, IconType> = {
-        filter: HiOutlineFilter,
-        dots: HiOutlineDotsHorizontal,
-    };
 
     const IconComponent = props.icon ? iconMap[props.icon] : undefined;
     const ChevronComponent = isOpen ? HiChevronUp : HiChevronDown;
@@ -128,6 +146,9 @@ export default function Dropdown(props: DropdownProps) {
 }
 
 export function DropdownItem(props: DropdownItemProps) {
+    const icon = props.iconOptions?.icon;
+    const IconComponent = icon ? iconMap[icon] : HiCheck;
+
     return (
         <div
             className={cn(
@@ -141,17 +162,25 @@ export function DropdownItem(props: DropdownItemProps) {
                 props.onClick?.();
             }}
         >
-            <HiCheck
-                className={cn('size-4 text-gray-900', {
-                    'text-transparent': !props.selected,
-                })}
+            <IconComponent
+                className={cn(
+                    'size-4 text-gray-900',
+                    {
+                        'text-transparent': !props.selected && !props.iconOptions?.alwaysActive,
+                    },
+                    props.customColors?.icon,
+                )}
             />
 
             <span
                 id={'menu-item-' + props.id}
-                className={cn('block cursor-pointer text-sm text-gray-700', {
-                    'text-gray-900': props.selected,
-                })}
+                className={cn(
+                    'block cursor-pointer text-sm text-gray-700',
+                    {
+                        'text-gray-900': props.selected,
+                    },
+                    props.customColors?.text,
+                )}
                 tabIndex={-1}
             >
                 {props.text}
