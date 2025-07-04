@@ -95,7 +95,7 @@ export default function Task(props: TaskProps) {
                     disableChevron
                     onClick={() => setIsActionMenuOpen((prev) => !prev)}
                     onBlur={() => setIsActionMenuOpen(false)}
-                    customStyle="hover:bg-gray-100 focus:border-transparent focus:outline-transparent border-transparent"
+                    customStyle="hover:bg-gray-100 border-transparent focus:outline-transparent"
                 >
                     <DropdownItem
                         id={'task-action-edit'}

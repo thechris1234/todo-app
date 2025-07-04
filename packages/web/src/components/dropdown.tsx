@@ -123,7 +123,7 @@ export default function Dropdown(props: DropdownProps) {
                 className={cn(
                     'inline-flex w-full cursor-pointer items-center justify-between gap-x-1.5 rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors hover:bg-gray-50',
                     {
-                        'focus:border-gray-400 focus:outline-gray-400': props.open,
+                        'focus:outline-gray-400': props.open,
                     },
                     props.customStyle,
                 )}

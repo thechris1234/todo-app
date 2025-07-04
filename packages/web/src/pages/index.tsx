@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 
 import { demoTasks } from '../information/demo';
 import { StatusStyles } from '../information/statuses';
@@ -15,18 +15,23 @@ import Dropdown, { DropdownItem } from '../components/dropdown';
 
 import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie } from 'react-icons/hi';
 
+import Modal from '../components/modal';
+
 export default function Index() {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const isModalOpen = location.pathname === '/new';
+
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const params = new URLSearchParams(searchParams);
     const search = searchParams.get('search');
     const status = searchParams.get('status');
 
     const handleSearchChange = (value: string) => {
-        const params = new URLSearchParams(searchParams);
-
         if (value.trim() === '') {
             params.delete('search');
         } else {
@@ -37,8 +42,6 @@ export default function Index() {
     };
 
     const handleStatusChange = (value: string) => {
-        const params = new URLSearchParams(searchParams);
-
         if (value === status) {
             params.delete('status');
         } else {
@@ -57,133 +60,149 @@ export default function Index() {
     });
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
-            <div className="mx-auto max-w-7xl">
-                <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="mb-4 flex items-center justify-between">
-                        <div className="flex flex-col">
-                            <h1 className="text-2xl font-bold text-gray-900">todo app</h1>
-                            <span className="font-medium text-gray-600">
-                                Manage your tasks and projects efficiently
-                            </span>
-                        </div>
+        <>
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
+                <div className="mx-auto max-w-7xl">
+                    <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <h1 className="text-2xl font-bold text-gray-900">todo app</h1>
+                                <span className="font-medium text-gray-600">
+                                    Manage your tasks and projects efficiently
+                                </span>
+                            </div>
 
-                        <div className="flex items-center gap-4 font-medium">
-                            <Dropdown
-                                id="profile-menu-button"
-                                text="Teszt Lajos"
-                                image={{ src: 'https://i.imgur.com/5WXqSz7.jpeg' }}
-                                customStyle="border-transparent py-[0.1875rem] px-4 gap-2 whitespace-nowrap"
-                                disableChevron
-                                open={isProfileMenuOpen}
-                                onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-                                onBlur={() => setIsProfileMenuOpen(false)}
-                            >
-                                <DropdownItem
-                                    id="profile-menu-profile"
-                                    text="Your profile"
-                                    iconOptions={{ icon: 'user', alwaysActive: true }}
-                                />
-                                <DropdownItem
-                                    id="profile-menu-logout"
-                                    text="Sign out"
-                                    iconOptions={{ icon: 'signout', alwaysActive: true }}
-                                />
-                            </Dropdown>
-
-                            <Button text="New Task" icon="new" />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-center gap-4 text-black sm:flex-row">
-                        <Input
-                            id="task-search-input"
-                            type="text"
-                            placeholder="Search tasks..."
-                            icon="search"
-                            value={search ?? ''}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            full
-                        />
-
-                        <Dropdown
-                            id="task-status-filter"
-                            text={status ? StatusStyles[status as StatusTag]?.title : 'All Tasks'}
-                            icon="filter"
-                            open={isFilterMenuOpen}
-                            onClick={() => setIsFilterMenuOpen((prev) => !prev)}
-                            onBlur={() => setIsFilterMenuOpen(false)}
-                            customStyle="w-full sm:w-48 pl-4"
-                        >
-                            {Object.keys(StatusStyles).map((statusKey) => {
-                                return (
+                            <div className="flex items-center gap-4 font-medium">
+                                <Dropdown
+                                    id="profile-menu-button"
+                                    text="Teszt Lajos"
+                                    image={{ src: 'https://i.imgur.com/5WXqSz7.jpeg' }}
+                                    customStyle="border-transparent py-[0.1875rem] px-4 gap-2 whitespace-nowrap"
+                                    disableChevron
+                                    open={isProfileMenuOpen}
+                                    onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+                                    onBlur={() => setIsProfileMenuOpen(false)}
+                                >
                                     <DropdownItem
-                                        key={statusKey}
-                                        id={statusKey}
-                                        text={StatusStyles[statusKey as StatusTag]?.title}
-                                        onClick={() => handleStatusChange(statusKey)}
-                                        selected={statusKey === status}
+                                        id="profile-menu-profile"
+                                        text="Your profile"
+                                        iconOptions={{ icon: 'user', alwaysActive: true }}
                                     />
-                                );
-                            })}
-                        </Dropdown>
+                                    <DropdownItem
+                                        id="profile-menu-logout"
+                                        text="Sign out"
+                                        iconOptions={{ icon: 'signout', alwaysActive: true }}
+                                    />
+                                </Dropdown>
+                                <Button
+                                    text="New Task"
+                                    icon="new"
+                                    onClick={() => {
+                                        navigate('/new');
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-4 text-black sm:flex-row">
+                            <Input
+                                id="task-search-input"
+                                type="text"
+                                placeholder="Search tasks..."
+                                icon="search"
+                                value={search ?? ''}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                full
+                            />
+
+                            <Dropdown
+                                id="task-status-filter"
+                                text={status ? StatusStyles[status as StatusTag]?.title : 'All Tasks'}
+                                icon="filter"
+                                open={isFilterMenuOpen}
+                                onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+                                onBlur={() => setIsFilterMenuOpen(false)}
+                                customStyle="w-full sm:w-48 pl-4"
+                            >
+                                {Object.keys(StatusStyles).map((statusKey) => {
+                                    return (
+                                        <DropdownItem
+                                            key={statusKey}
+                                            id={statusKey}
+                                            text={StatusStyles[statusKey as StatusTag]?.title}
+                                            onClick={() => handleStatusChange(statusKey)}
+                                            selected={statusKey === status}
+                                        />
+                                    );
+                                })}
+                            </Dropdown>
+                        </div>
                     </div>
-                </div>
-                <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="sticky top-0 z-[5] border-b border-gray-200 bg-gray-50">
-                                <tr>
-                                    <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
-                                        <Checkbox checked={false} isIndeterminate={true} />
-                                    </th>
-                                    <th className="py-3 pr-3 pl-2 text-left font-medium text-gray-900">
-                                        <span>Task</span>
-                                    </th>
-                                    <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
-                                        <HiOutlineChartPie className="inline-block align-middle" />
-                                        <span className="inline-block align-middle">Status</span>
-                                    </th>
-                                    <th className="hidden space-x-2 px-3 py-3 text-left font-medium text-gray-900 sm:block">
-                                        <HiOutlineChartBar className="inline-block align-middle" />
-                                        <span className="inline-block align-middle">Priority</span>
-                                    </th>
-                                    <th className="space-x-2 px-3 py-3 text-left font-medium whitespace-nowrap text-gray-900">
-                                        <HiOutlineCalendar className="inline-block align-middle" />
-                                        <span className="inline-block align-middle">Due Date</span>
-                                    </th>
-                                    <th className="w-0 py-3 pr-4 pl-3 text-left font-medium text-gray-900">
-                                        <span>Actions</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredTasks.length <= 0 ? (
+                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead className="sticky top-0 z-[5] border-b border-gray-200 bg-gray-50">
                                     <tr>
-                                        <td colSpan={6} className="py-12 text-center text-gray-500">
-                                            No tasks found matching your criteria.
-                                        </td>
+                                        <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
+                                            <Checkbox checked={false} isIndeterminate={true} />
+                                        </th>
+                                        <th className="py-3 pr-3 pl-2 text-left font-medium text-gray-900">
+                                            <span>Task</span>
+                                        </th>
+                                        <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
+                                            <HiOutlineChartPie className="inline-block align-middle" />
+                                            <span className="inline-block align-middle">Status</span>
+                                        </th>
+                                        <th className="hidden space-x-2 px-3 py-3 text-left font-medium text-gray-900 sm:block">
+                                            <HiOutlineChartBar className="inline-block align-middle" />
+                                            <span className="inline-block align-middle">Priority</span>
+                                        </th>
+                                        <th className="space-x-2 px-3 py-3 text-left font-medium whitespace-nowrap text-gray-900">
+                                            <HiOutlineCalendar className="inline-block align-middle" />
+                                            <span className="inline-block align-middle">Due Date</span>
+                                        </th>
+                                        <th className="w-0 py-3 pr-4 pl-3 text-left font-medium text-gray-900">
+                                            <span>Actions</span>
+                                        </th>
                                     </tr>
-                                ) : (
-                                    filteredTasks.map((task: TaskType) => {
-                                        return (
-                                            <Task
-                                                key={task.id}
-                                                options={task}
-                                                onCheckBoxChange={() => {
-                                                    console.log(
-                                                        `Task '${task.title}' completed status now: ${!task.completed}`,
-                                                    );
-                                                }}
-                                            />
-                                        );
-                                    })
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {filteredTasks.length <= 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className="py-12 text-center text-gray-500">
+                                                No tasks found matching your criteria.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        filteredTasks.map((task: TaskType) => {
+                                            return (
+                                                <Task
+                                                    key={task.id}
+                                                    options={task}
+                                                    onCheckBoxChange={() => {
+                                                        console.log(
+                                                            `Task '${task.title}' completed status now: ${!task.completed}`,
+                                                        );
+                                                    }}
+                                                />
+                                            );
+                                        })
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <Modal
+                open={isModalOpen}
+                onBackdropClick={() => {
+                    navigate('');
+                }}
+            >
+                <div className="flex grow flex-col items-center justify-center gap-6">new task</div>
+            </Modal>
+        </>
     );
 }
