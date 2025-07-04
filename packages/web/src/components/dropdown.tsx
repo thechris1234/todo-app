@@ -19,6 +19,7 @@ type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash' | 'signout' | 'user';
 type DropdownProps = {
     id?: string;
     text: string;
+    textStyle?: string;
     icon?: ValidIcon;
     image?: {
         src: string;
@@ -58,13 +59,13 @@ const iconMap: Record<ValidIcon, IconType> = {
 
 export default function Dropdown(props: DropdownProps) {
     const [menuStyles, setMenuStyles] = useState<React.CSSProperties>({});
-    const [isOpen, setIsOpen] = useState(props.open);
 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const IconComponent = props.icon ? iconMap[props.icon] : undefined;
-    const ChevronComponent = isOpen ? HiChevronUp : HiChevronDown;
+    const ChevronComponent = props.open ? HiChevronUp : HiChevronDown;
 
     const handleBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
         if (dropdownRef.current && !dropdownRef.current.contains(e.relatedTarget as Node)) {
@@ -73,26 +74,34 @@ export default function Dropdown(props: DropdownProps) {
     };
 
     useEffect(() => {
-        setIsOpen(props.open ?? false);
-
         const calculatePosition = () => {
-            if (props.open && buttonRef.current && dropdownRef.current) {
+            if (props.open && buttonRef.current && dropdownRef.current && menuRef.current) {
                 const buttonRect = buttonRef.current.getBoundingClientRect();
                 const dropdownRect = dropdownRef.current.getBoundingClientRect();
+                const menuRect = menuRef.current?.getBoundingClientRect();
 
-                const viewportHeight = window.innerHeight;
                 const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
 
                 let top = buttonRect.bottom + 8;
-                let left = buttonRect.right;
+                let left = buttonRect.right - menuRect.width;
 
-                if (top + dropdownRect.height > viewportHeight) {
-                    top = buttonRect.top - dropdownRect.height - 8;
+                if (props.open)
+                    if (top + dropdownRect.height > viewportHeight) {
+                        top = buttonRect.top - menuRect.height - 8;
+                    }
+
+                if (left + dropdownRect.width > viewportWidth) {
+                    left = dropdownRect.right - menuRect.width;
                 }
 
-                if (buttonRect.left + dropdownRect.width > viewportWidth) {
-                    left = buttonRect.right - dropdownRect.width + window.scrollX;
-                    if (left < 0) left = 0;
+                if (left < 0) {
+                    const canAlignToLeft = buttonRect.left + dropdownRect.width <= viewportWidth;
+                    if (canAlignToLeft) {
+                        left = buttonRect.left;
+                    } else {
+                        left = Math.max(viewportWidth - dropdownRect.width, 0);
+                    }
                 }
 
                 setMenuStyles({
@@ -121,13 +130,10 @@ export default function Dropdown(props: DropdownProps) {
                 id={'menu-' + (props.id ?? 'button')}
                 type="button"
                 className={cn(
-                    'inline-flex w-full cursor-pointer items-center justify-between gap-x-1.5 rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors hover:bg-gray-50',
-                    {
-                        'focus:outline-gray-400': props.open,
-                    },
+                    'inline-flex w-fit cursor-pointer items-center justify-between gap-x-1.5 rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors hover:bg-gray-50 focus:outline-gray-400',
                     props.customStyle,
                 )}
-                aria-expanded={isOpen}
+                aria-expanded={props.open}
                 onClick={props.onClick}
                 onBlur={handleBlur}
             >
@@ -140,14 +146,15 @@ export default function Dropdown(props: DropdownProps) {
                     ></img>
                 )}
 
-                {props.text}
+                {props.text && <span className={cn('', props.textStyle)}>{props.text}</span>}
 
                 {!props.disableChevron && <ChevronComponent className="size-5 shrink-0 text-gray-600" />}
             </button>
 
-            {isOpen && props.children && (
+            {props.open && props.children && (
                 <div
-                    className="fixed right-0 z-10 w-fit translate-x-[-100%] divide-y divide-gray-100 rounded-md border border-gray-200 bg-white p-1"
+                    ref={menuRef}
+                    className="fixed z-10 w-fit divide-y divide-gray-100 rounded-md border border-gray-200 bg-white p-1"
                     style={menuStyles}
                     aria-orientation="vertical"
                     aria-labelledby="menu-button"

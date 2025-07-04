@@ -91,7 +91,7 @@ export default function Task(props: TaskProps) {
                     id="task-status-filter"
                     text={''}
                     icon="dots"
-                    open={isActionMenuOpen} //isActionMenuOpen
+                    open={isActionMenuOpen}
                     disableChevron
                     onClick={() => setIsActionMenuOpen((prev) => !prev)}
                     onBlur={() => setIsActionMenuOpen(false)}

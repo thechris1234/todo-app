@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 
 import { demoTasks } from '../information/demo';
@@ -64,20 +64,21 @@ export default function Index() {
             <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <div className="mb-4 flex items-center justify-between">
-                            <div className="flex flex-col">
-                                <h1 className="text-2xl font-bold text-gray-900">todo app</h1>
-                                <span className="font-medium text-gray-600">
+                        <div className="mb-4 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                            <div className="flex w-full flex-col">
+                                <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">todo app</h1>
+                                <span className="text-sm font-medium text-gray-600 sm:text-base">
                                     Manage your tasks and projects efficiently
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-4 font-medium">
+                            <div className="flex w-full items-center justify-between gap-4 font-medium sm:w-fit">
                                 <Dropdown
                                     id="profile-menu-button"
                                     text="Teszt Lajos"
+                                    textStyle="hidden sm:block"
                                     image={{ src: 'https://i.imgur.com/5WXqSz7.jpeg' }}
-                                    customStyle="border-transparent py-[0.1875rem] px-4 gap-2 whitespace-nowrap"
+                                    customStyle="border-transparent py-[0.1875rem] px-1 sm:px-4 gap-2 whitespace-nowrap"
                                     disableChevron
                                     open={isProfileMenuOpen}
                                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
@@ -94,6 +95,7 @@ export default function Index() {
                                         iconOptions={{ icon: 'signout', alwaysActive: true }}
                                     />
                                 </Dropdown>
+
                                 <Button
                                     text="New Task"
                                     icon="new"
