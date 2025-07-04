@@ -16,7 +16,9 @@ import Dropdown, { DropdownItem } from '../components/dropdown';
 import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie } from 'react-icons/hi';
 
 export default function Index() {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
+    const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const search = searchParams.get('search');
@@ -67,15 +69,28 @@ export default function Index() {
                         </div>
 
                         <div className="flex items-center gap-4 font-medium">
-                            <button className="flex items-center gap-2 px-4 whitespace-nowrap">
-                                <img
-                                    src="https://i.imgur.com/5WXqSz7.jpeg"
-                                    className="flex aspect-square size-8 shrink-0 rounded-full"
-                                    alt="Profile picture"
-                                ></img>
+                            <Dropdown
+                                id="profile-menu-button"
+                                text="Teszt Lajos"
+                                image={{ src: 'https://i.imgur.com/5WXqSz7.jpeg' }}
+                                customStyle="border-transparent py-[0.1875rem] px-4 gap-2 whitespace-nowrap"
+                                disableChevron
+                                open={isProfileMenuOpen}
+                                onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+                                onBlur={() => setIsProfileMenuOpen(false)}
+                            >
+                                <DropdownItem
+                                    id="profile-menu-profile"
+                                    text="Your profile"
+                                    iconOptions={{ icon: 'user', alwaysActive: true }}
+                                />
+                                <DropdownItem
+                                    id="profile-menu-logout"
+                                    text="Sign out"
+                                    iconOptions={{ icon: 'signout', alwaysActive: true }}
+                                />
+                            </Dropdown>
 
-                                <span className="hidden text-sm text-gray-900 sm:inline">Teszt Lajos</span>
-                            </button>
                             <Button text="New Task" icon="new" />
                         </div>
                     </div>
@@ -95,9 +110,9 @@ export default function Index() {
                             id="task-status-filter"
                             text={status ? StatusStyles[status as StatusTag]?.title : 'All Tasks'}
                             icon="filter"
-                            open={isDropdownOpen}
-                            onClick={() => setIsDropdownOpen((prev) => !prev)}
-                            onBlur={() => setIsDropdownOpen(false)}
+                            open={isFilterMenuOpen}
+                            onClick={() => setIsFilterMenuOpen((prev) => !prev)}
+                            onBlur={() => setIsFilterMenuOpen(false)}
                             customStyle="w-full sm:w-48 pl-4"
                         >
                             {Object.keys(StatusStyles).map((statusKey) => {

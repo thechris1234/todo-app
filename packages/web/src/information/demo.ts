@@ -69,4 +69,23 @@ export const demoTasks: TaskType[] = [
         allDay: true,
         completed: true,
     },
+    {
+        id: 8,
+        title: 'Dokumentáció frissítése',
+        status: 'new',
+        priority: 'low',
+        dueDate: Date.now() + 183 * 86400000, // fév év múlva
+        allDay: false,
+        completed: false,
+    },
+    {
+        id: 9,
+        title: 'Új funkció tervezése',
+        desc: 'Felhasználói profil oldal specifikációjának elkészítése',
+        status: 'new',
+        priority: 'high',
+        dueDate: Date.now() + 365 * 2 * 86400000, // 2 év múlva
+        allDay: true,
+        completed: false,
+    },
 ];

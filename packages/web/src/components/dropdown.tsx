@@ -10,14 +10,20 @@ import {
     HiOutlineDotsHorizontal,
     HiOutlinePencilAlt,
     HiOutlineTrash,
+    HiOutlineUser,
+    HiOutlineLogout,
 } from 'react-icons/hi';
 
-type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash';
+type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash' | 'signout' | 'user';
 
 type DropdownProps = {
     id?: string;
     text: string;
     icon?: ValidIcon;
+    image?: {
+        src: string;
+        customStyle?: string;
+    };
     disableChevron?: boolean;
     open?: boolean;
     customStyle?: string;
@@ -46,6 +52,8 @@ const iconMap: Record<ValidIcon, IconType> = {
     dots: HiOutlineDotsHorizontal,
     edit: HiOutlinePencilAlt,
     trash: HiOutlineTrash,
+    user: HiOutlineUser,
+    signout: HiOutlineLogout,
 };
 
 export default function Dropdown(props: DropdownProps) {
@@ -107,7 +115,7 @@ export default function Dropdown(props: DropdownProps) {
     }, [props.open]);
 
     return (
-        <div ref={dropdownRef} className="relative inline-block w-full sm:w-fit">
+        <div ref={dropdownRef} className="relative inline-flex w-full sm:w-fit">
             <button
                 ref={buttonRef}
                 id={'menu-' + (props.id ?? 'button')}
@@ -124,6 +132,13 @@ export default function Dropdown(props: DropdownProps) {
                 onBlur={handleBlur}
             >
                 {props.icon && IconComponent && <IconComponent className="size-4 shrink-0 text-gray-600" />}
+
+                {props.image?.src && (
+                    <img
+                        src={props.image.src}
+                        className={cn('flex aspect-square size-8 shrink-0 rounded-full', props.image.customStyle)}
+                    ></img>
+                )}
 
                 {props.text}
 

@@ -24,10 +24,8 @@ export default function Task(props: TaskProps) {
         const date = new Date(time);
         const now = new Date();
 
-        const isToday =
-            date.getFullYear() === now.getFullYear() &&
-            date.getMonth() === now.getMonth() &&
-            date.getDate() === now.getDate();
+        const isCurrentYear = date.getFullYear() === now.getFullYear();
+        const isToday = isCurrentYear && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
 
         if (isToday) {
             return `Today${
@@ -40,15 +38,15 @@ export default function Task(props: TaskProps) {
             }`;
         }
 
-        return formatTimestampIntl(time, 'hu-HU', {
-            year: 'numeric',
-            month: '2-digit',
+        const timestampSetting: Intl.DateTimeFormatOptions = {
+            year: !isCurrentYear ? 'numeric' : undefined,
+            month: isCurrentYear ? 'long' : '2-digit',
             day: '2-digit',
-            ...(!isAllDay && {
-                hour: '2-digit',
-                minute: '2-digit',
-            }),
-        });
+            hour: !isAllDay ? '2-digit' : undefined,
+            minute: !isAllDay ? '2-digit' : undefined,
+        };
+
+        return formatTimestampIntl(time, 'hu-HU', timestampSetting);
     };
 
     return (
