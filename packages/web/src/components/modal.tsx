@@ -42,12 +42,16 @@ export default function Modal(props: ModalProps) {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25, ease: 'easeInOut' }}
                     className={cn(
-                        'fixed z-[9999] m-0 flex min-h-screen min-w-screen overflow-hidden bg-gray-900/70 text-white outline-0 select-none',
+                        'fixed m-0 flex min-h-screen min-w-screen items-center justify-center overflow-hidden bg-gray-900/85 p-4 text-white outline-0 select-none',
                         {
                             [`bg-[${props.bgColor}`]: props.bgColor,
                         },
                     )}
-                    onClick={props.onBackdropClick}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            props.onBackdropClick?.();
+                        }
+                    }}
                     onKeyDown={(e) => {
                         if (e.key === 'Escape') {
                             e.preventDefault();

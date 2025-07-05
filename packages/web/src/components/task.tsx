@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { formatTimestampIntl } from '../utils/time';
 import Checkbox from './checkbox';
@@ -14,7 +14,7 @@ type TaskProps = {
     onCheckBoxChange?: () => void;
 };
 
-export default function Task(props: TaskProps) {
+function Task(props: TaskProps) {
     const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
     const handleTimestampDisplay = () => {
@@ -56,7 +56,11 @@ export default function Task(props: TaskProps) {
                     'mt-1 inline-flex': props.options.desc,
                 })}
             >
-                <Checkbox checked={props.options.completed ?? false} onChange={props.onCheckBoxChange} />
+                <Checkbox
+                    id={`task-checkbox-${props.options.id}`}
+                    checked={props.options.completed ?? false}
+                    onChange={props.onCheckBoxChange}
+                />
             </td>
             <td className="py-3 pr-3 pl-2">
                 <div className="flex flex-col">
@@ -95,7 +99,7 @@ export default function Task(props: TaskProps) {
                     disableChevron
                     onClick={() => setIsActionMenuOpen((prev) => !prev)}
                     onBlur={() => setIsActionMenuOpen(false)}
-                    customStyle="hover:bg-gray-100 border-transparent focus:outline-transparent"
+                    className="border-transparent hover:bg-gray-100 focus:outline-transparent"
                 >
                     <DropdownItem
                         id={'task-action-edit'}
@@ -116,3 +120,18 @@ export default function Task(props: TaskProps) {
         </tr>
     );
 }
+
+function areEqual(prevProps: TaskProps, nextProps: TaskProps) {
+    return (
+        prevProps.options.id === nextProps.options.id &&
+        prevProps.options.title === nextProps.options.title &&
+        prevProps.options.desc === nextProps.options.desc &&
+        prevProps.options.status === nextProps.options.status &&
+        prevProps.options.priority === nextProps.options.priority &&
+        prevProps.options.dueDate === nextProps.options.dueDate &&
+        prevProps.options.allDay === nextProps.options.allDay &&
+        prevProps.options.completed === nextProps.options.completed
+    );
+}
+
+export default memo(Task, areEqual);

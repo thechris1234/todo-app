@@ -8,7 +8,7 @@ type ValidIcon = 'new';
 type ButtonProps = {
     text: string;
     icon?: ValidIcon;
-    customStyle?: string;
+    className?: string;
     onClick?: () => void;
 };
 
@@ -23,7 +23,7 @@ export default function Button(props: ButtonProps) {
         <button
             className={cn(
                 'flex cursor-pointer items-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm whitespace-nowrap outline-offset-2 transition-colors hover:bg-purple-700 focus:outline focus:outline-gray-400',
-                props.customStyle,
+                props.className,
             )}
             onClick={props.onClick}
         >

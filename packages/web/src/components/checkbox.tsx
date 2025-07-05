@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { HiMinusSm, HiCheck } from 'react-icons/hi';
 
 type CheckboxProps = {
+    id?: string;
     checked: boolean;
     isIndeterminate?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -30,6 +31,7 @@ export default function Checkbox(props: CheckboxProps) {
             </motion.div>
 
             <input
+                id={props.id}
                 type="checkbox"
                 checked={props.checked}
                 onChange={props.onChange}

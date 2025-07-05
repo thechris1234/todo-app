@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useReducer, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 
 import { demoTasks } from '../information/demo';
 import { StatusStyles } from '../information/statuses';
+import { PriorityStyles } from '../information/priorities';
 
 import type { TaskType } from '../types/task-type';
 import type { StatusTag } from '../types/status-type';
+import type { PriorityTag } from '../types/priority-type';
 
 import Checkbox from '../components/checkbox';
 import Task from '../components/task';
@@ -17,11 +19,59 @@ import { HiOutlineCalendar, HiOutlineChartBar, HiOutlineChartPie } from 'react-i
 
 import Modal from '../components/modal';
 
+type CreateTaskFormType = {
+    title: string;
+    desc: string;
+    status: StatusTag;
+    priority: PriorityTag;
+    time: string;
+    isAllDay: boolean;
+};
+
+type CreateTaskActionType =
+    | { type: 'SET_TITLE'; payload: string }
+    | { type: 'SET_DESC'; payload: string }
+    | { type: 'SET_STATUS'; payload: StatusTag }
+    | { type: 'SET_PRIORITY'; payload: PriorityTag }
+    | { type: 'SET_TIME'; payload: string }
+    | { type: 'SET_IS_ALL_DAY'; payload: boolean };
+
 export default function Index() {
     const location = useLocation();
     const navigate = useNavigate();
 
     const isModalOpen = location.pathname === '/new';
+
+    const reducer = (state: CreateTaskFormType, action: CreateTaskActionType) => {
+        switch (action.type) {
+            case 'SET_TITLE':
+                return { ...state, title: action.payload };
+            case 'SET_DESC':
+                return { ...state, desc: action.payload };
+            case 'SET_STATUS':
+                return { ...state, status: action.payload };
+            case 'SET_PRIORITY':
+                return { ...state, priority: action.payload };
+            case 'SET_TIME':
+                return { ...state, time: action.payload };
+            case 'SET_IS_ALL_DAY':
+                return { ...state, isAllDay: action.payload };
+            default:
+                return state;
+        }
+    };
+
+    const [createTaskForm, dispatch] = useReducer(reducer, {
+        title: '',
+        desc: '',
+        status: 'new',
+        priority: 'normal',
+        time: '',
+        isAllDay: false,
+    });
+
+    const [isCreateTaskStatusMenuOpen, setIsCreateTaskStatusMenuOpen] = useState(false);
+    const [isCreateTaskPriorityMenuOpen, setIsCreateTaskPriorityMenuOpen] = useState(false);
 
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
@@ -51,13 +101,20 @@ export default function Index() {
         setSearchParams(params);
     };
 
-    const filteredTasks = demoTasks.filter((task) => {
-        const taskName = task.title.toLocaleLowerCase();
-        const matchesSearch = search ? taskName.includes(search.toLowerCase()) : true;
-        const matchesStatus = status ? task.status === status : true;
+    const filteredTasks = useMemo(() => {
+        return demoTasks.filter((task) => {
+            const taskName = task.title.toLowerCase();
+            const matchesSearch = search ? taskName.includes(search.toLowerCase()) : true;
+            const matchesStatus = status ? task.status === status : true;
+            return matchesSearch && matchesStatus;
+        });
+    }, [search, status]);
 
-        return matchesSearch && matchesStatus;
-    });
+    const handleCheckBoxChange = useCallback((task: TaskType) => {
+        return () => {
+            console.log(`Task '${task.title}' completed status now: ${!task.completed}`);
+        };
+    }, []);
 
     return (
         <>
@@ -78,7 +135,7 @@ export default function Index() {
                                     text="Teszt Lajos"
                                     textStyle="hidden sm:block"
                                     image={{ src: 'https://i.imgur.com/5WXqSz7.jpeg' }}
-                                    customStyle="border-transparent py-[0.1875rem] px-1 sm:px-4 gap-2 whitespace-nowrap"
+                                    className="gap-2 border-transparent px-1 py-[0.1875rem] whitespace-nowrap sm:px-4"
                                     disableChevron
                                     open={isProfileMenuOpen}
                                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
@@ -114,7 +171,6 @@ export default function Index() {
                                 icon="search"
                                 value={search ?? ''}
                                 onChange={(e) => handleSearchChange(e.target.value)}
-                                full
                             />
 
                             <Dropdown
@@ -124,7 +180,8 @@ export default function Index() {
                                 open={isFilterMenuOpen}
                                 onClick={() => setIsFilterMenuOpen((prev) => !prev)}
                                 onBlur={() => setIsFilterMenuOpen(false)}
-                                customStyle="w-full sm:w-48 pl-4"
+                                className="pl-4"
+                                width="w-full sm:w-48"
                             >
                                 {Object.keys(StatusStyles).map((statusKey) => {
                                     return (
@@ -146,7 +203,7 @@ export default function Index() {
                                 <thead className="sticky top-0 z-[5] border-b border-gray-200 bg-gray-50">
                                     <tr>
                                         <th className="w-0 py-3 pr-2 pl-4 text-gray-900">
-                                            <Checkbox checked={false} isIndeterminate={true} />
+                                            <Checkbox id="table-checkbox" checked={false} isIndeterminate={true} />
                                         </th>
                                         <th className="py-3 pr-3 pl-2 text-left font-medium text-gray-900">
                                             <span>Task</span>
@@ -181,11 +238,7 @@ export default function Index() {
                                                 <Task
                                                     key={task.id}
                                                     options={task}
-                                                    onCheckBoxChange={() => {
-                                                        console.log(
-                                                            `Task '${task.title}' completed status now: ${!task.completed}`,
-                                                        );
-                                                    }}
+                                                    onCheckBoxChange={handleCheckBoxChange(task)}
                                                 />
                                             );
                                         })
@@ -203,7 +256,74 @@ export default function Index() {
                     navigate('');
                 }}
             >
-                <div className="flex grow flex-col items-center justify-center gap-6">new task</div>
+                <div className="w-full max-w-lg space-y-4 rounded-md bg-white p-4">
+                    <h1 className="text-xl font-bold text-gray-900 sm:text-lg">Create New Task</h1>
+
+                    <Input
+                        id="create-task-input-name"
+                        type="text"
+                        title="Title"
+                        value={createTaskForm.title}
+                        placeholder="Enter a task title..."
+                        onChange={(e) => dispatch({ type: 'SET_TITLE', payload: e.target.value })}
+                    />
+
+                    <Input
+                        id="create-task-input-description"
+                        type="textarea"
+                        title="Description"
+                        value={createTaskForm.desc}
+                        placeholder="Enter an optional description..."
+                        className="min-h-20"
+                        onChange={(e) => dispatch({ type: 'SET_DESC', payload: e.target.value })}
+                    />
+
+                    <Dropdown
+                        id="create-task-dropdown-status"
+                        title="Status"
+                        text={StatusStyles[createTaskForm.status as StatusTag]?.title}
+                        open={isCreateTaskStatusMenuOpen}
+                        onClick={() => setIsCreateTaskStatusMenuOpen((prev) => !prev)}
+                        onBlur={() => setIsCreateTaskStatusMenuOpen(false)}
+                        className="w-full"
+                    >
+                        {Object.keys(StatusStyles).map((statusKey) => {
+                            return (
+                                <DropdownItem
+                                    key={statusKey}
+                                    id={statusKey}
+                                    text={StatusStyles[statusKey as StatusTag]?.title}
+                                    onClick={() => dispatch({ type: 'SET_STATUS', payload: statusKey as StatusTag })}
+                                    selected={statusKey === createTaskForm.status}
+                                />
+                            );
+                        })}
+                    </Dropdown>
+
+                    <Dropdown
+                        id="create-task-dropdown-priority"
+                        title="Priority"
+                        text={PriorityStyles[createTaskForm.priority as PriorityTag]?.title}
+                        open={isCreateTaskPriorityMenuOpen}
+                        onClick={() => setIsCreateTaskPriorityMenuOpen((prev) => !prev)}
+                        onBlur={() => setIsCreateTaskPriorityMenuOpen(false)}
+                        className="w-full"
+                    >
+                        {Object.keys(PriorityStyles).map((priorityKey) => {
+                            return (
+                                <DropdownItem
+                                    key={priorityKey}
+                                    id={priorityKey}
+                                    text={PriorityStyles[priorityKey as PriorityTag]?.title}
+                                    onClick={() =>
+                                        dispatch({ type: 'SET_PRIORITY', payload: priorityKey as PriorityTag })
+                                    }
+                                    selected={priorityKey === createTaskForm.priority}
+                                />
+                            );
+                        })}
+                    </Dropdown>
+                </div>
             </Modal>
         </>
     );

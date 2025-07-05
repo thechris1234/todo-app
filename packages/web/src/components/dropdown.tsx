@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../utils/cn';
+
+import { AnimatePresence, motion } from 'motion/react';
 
 import type { IconType } from 'react-icons';
 import {
@@ -20,14 +22,16 @@ type DropdownProps = {
     id?: string;
     text: string;
     textStyle?: string;
+    title?: string;
     icon?: ValidIcon;
     image?: {
         src: string;
-        customStyle?: string;
+        className?: string;
     };
     disableChevron?: boolean;
     open?: boolean;
-    customStyle?: string;
+    className?: string;
+    width?: string;
     onClick?: () => void;
     onBlur?: (e: React.FocusEvent<HTMLButtonElement>) => void;
     children?: React.ReactNode;
@@ -58,6 +62,7 @@ const iconMap: Record<ValidIcon, IconType> = {
 };
 
 export default function Dropdown(props: DropdownProps) {
+    const [isOpen, setIsOpen] = useState(false);
     const [menuStyles, setMenuStyles] = useState<React.CSSProperties>({});
 
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -74,8 +79,14 @@ export default function Dropdown(props: DropdownProps) {
     };
 
     useEffect(() => {
+        setIsOpen(props.open ?? false);
+    }, [props.open]);
+
+    useLayoutEffect(() => {
+        if (!isOpen) return;
+
         const calculatePosition = () => {
-            if (props.open && buttonRef.current && dropdownRef.current && menuRef.current) {
+            if (isOpen && buttonRef.current && dropdownRef.current && menuRef.current) {
                 const buttonRect = buttonRef.current.getBoundingClientRect();
                 const dropdownRect = dropdownRef.current.getBoundingClientRect();
                 const menuRect = menuRef.current?.getBoundingClientRect();
@@ -86,7 +97,7 @@ export default function Dropdown(props: DropdownProps) {
                 let top = buttonRect.bottom + 8;
                 let left = buttonRect.right - menuRect.width;
 
-                if (props.open)
+                if (isOpen)
                     if (top + dropdownRect.height > viewportHeight) {
                         top = buttonRect.top - menuRect.height - 8;
                     }
@@ -112,26 +123,34 @@ export default function Dropdown(props: DropdownProps) {
             }
         };
 
-        calculatePosition();
+        const raf = requestAnimationFrame(calculatePosition);
 
         window.addEventListener('resize', calculatePosition);
         window.addEventListener('scroll', calculatePosition, true);
 
         return () => {
+            cancelAnimationFrame(raf);
             window.removeEventListener('resize', calculatePosition);
             window.removeEventListener('scroll', calculatePosition, true);
         };
-    }, [props.open]);
+    }, [isOpen]);
 
     return (
-        <div ref={dropdownRef} className="relative inline-flex w-full sm:w-fit">
+        <div ref={dropdownRef} className={cn('relative', props.width)}>
+            {props.title && (
+                <label htmlFor={props.id} className="text-sm leading-none font-medium text-gray-900">
+                    {props.title}
+                </label>
+            )}
+
             <button
                 ref={buttonRef}
-                id={'menu-' + (props.id ?? 'button')}
+                id={props.id}
                 type="button"
                 className={cn(
-                    'inline-flex w-fit cursor-pointer items-center justify-between gap-x-1.5 rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors hover:bg-gray-50 focus:outline-gray-400',
-                    props.customStyle,
+                    'inline-flex w-fit cursor-pointer items-center justify-between gap-x-1.5 rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm whitespace-nowrap text-gray-900 outline outline-transparent transition-colors hover:bg-gray-50 focus:outline-gray-400',
+                    props.className,
+                    props.width,
                 )}
                 aria-expanded={props.open}
                 onClick={props.onClick}
@@ -142,7 +161,7 @@ export default function Dropdown(props: DropdownProps) {
                 {props.image?.src && (
                     <img
                         src={props.image.src}
-                        className={cn('flex aspect-square size-8 shrink-0 rounded-full', props.image.customStyle)}
+                        className={cn('flex aspect-square size-8 shrink-0 rounded-full', props.image.className)}
                     ></img>
                 )}
 
@@ -151,18 +170,24 @@ export default function Dropdown(props: DropdownProps) {
                 {!props.disableChevron && <ChevronComponent className="size-5 shrink-0 text-gray-600" />}
             </button>
 
-            {props.open && props.children && (
-                <div
-                    ref={menuRef}
-                    className="fixed z-10 w-fit divide-y divide-gray-100 rounded-md border border-gray-200 bg-white p-1"
-                    style={menuStyles}
-                    aria-orientation="vertical"
-                    aria-labelledby="menu-button"
-                    tabIndex={-1}
-                >
-                    {props.children}
-                </div>
-            )}
+            <AnimatePresence onExitComplete={() => setIsOpen(false)}>
+                {isOpen && (
+                    <motion.div
+                        ref={menuRef}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                        className="fixed z-10 w-fit divide-y divide-gray-100 rounded-md border border-gray-200 bg-white p-1"
+                        style={menuStyles}
+                        aria-orientation="vertical"
+                        aria-labelledby="menu-button"
+                        tabIndex={-1}
+                    >
+                        {props.children}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
