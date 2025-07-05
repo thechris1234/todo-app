@@ -1,5 +1,4 @@
 import { cn } from '../utils/cn';
-import { memo } from 'react';
 
 import type { IconType } from 'react-icons';
 import type { InputError } from '../types/input-type';
@@ -10,9 +9,9 @@ type ValidIcon = 'search' | 'user' | 'password' | 'email';
 
 type InputProps = {
     id: string;
-    type: 'text' | 'password' | 'email' | 'textarea';
+    type: 'text' | 'textarea' | 'password' | 'email' | 'date' | 'datetime-local';
     title?: string;
-    placeholder: string;
+    placeholder?: string;
     value?: string;
     icon?: ValidIcon;
     width?: boolean;
@@ -30,7 +29,7 @@ const iconMap: Record<ValidIcon, IconType> = {
     email: HiOutlineCalendar,
 };
 
-function Input(props: InputProps) {
+export default function Input(props: InputProps) {
     const IconComponent = props.icon && iconMap[props.icon];
 
     return (
@@ -63,6 +62,20 @@ function Input(props: InputProps) {
                             props.className,
                         )}
                     ></textarea>
+                ) : props.type === 'date' || props.type === 'datetime-local' ? (
+                    <input
+                        id={props.id}
+                        type={props.type}
+                        placeholder={props.placeholder}
+                        className={cn(
+                            'block w-full rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors placeholder:text-gray-400 placeholder:italic focus:outline-gray-400',
+                            {
+                                'pl-10': props.icon,
+                            },
+                            props.className,
+                        )}
+                        onChange={props.onChange}
+                    />
                 ) : (
                     <input
                         id={props.id}
@@ -88,21 +101,3 @@ function Input(props: InputProps) {
         </div>
     );
 }
-
-function areEqual(prevProps: InputProps, nextProps: InputProps) {
-    return (
-        prevProps.id === nextProps.id &&
-        prevProps.type === nextProps.type &&
-        prevProps.title === nextProps.title &&
-        prevProps.placeholder === nextProps.placeholder &&
-        prevProps.value === nextProps.value &&
-        prevProps.icon === nextProps.icon &&
-        prevProps.width === nextProps.width &&
-        prevProps.error === nextProps.error &&
-        prevProps.errorText === nextProps.errorText &&
-        prevProps.maxLength === nextProps.maxLength &&
-        prevProps.className === nextProps.className
-    );
-}
-
-export default memo(Input, areEqual);

@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { motion } from 'motion/react';
 import { cn } from '../utils/cn';
 
@@ -11,7 +10,7 @@ type CheckboxProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-function Checkbox(props: CheckboxProps) {
+export default function Checkbox(props: CheckboxProps) {
     const IconComponent = props.isIndeterminate ? HiMinusSm : props.checked ? HiCheck : null;
 
     return (
@@ -42,13 +41,3 @@ function Checkbox(props: CheckboxProps) {
         </div>
     );
 }
-
-const areEqual = (prevProps: CheckboxProps, nextProps: CheckboxProps) => {
-    return (
-        prevProps.checked === nextProps.checked &&
-        prevProps.isIndeterminate === nextProps.isIndeterminate &&
-        prevProps.id === nextProps.id
-    );
-};
-
-export default memo(Checkbox, areEqual);

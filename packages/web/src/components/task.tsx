@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { useState } from 'react';
 
 import { formatTimestampIntl } from '../utils/time';
 import Checkbox from './checkbox';
@@ -14,7 +14,7 @@ type TaskProps = {
     onCheckBoxChange?: () => void;
 };
 
-function Task(props: TaskProps) {
+export default function Task(props: TaskProps) {
     const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
 
     const handleTimestampDisplay = () => {
@@ -120,18 +120,3 @@ function Task(props: TaskProps) {
         </tr>
     );
 }
-
-function areEqual(prevProps: TaskProps, nextProps: TaskProps) {
-    return (
-        prevProps.options.id === nextProps.options.id &&
-        prevProps.options.title === nextProps.options.title &&
-        prevProps.options.desc === nextProps.options.desc &&
-        prevProps.options.status === nextProps.options.status &&
-        prevProps.options.priority === nextProps.options.priority &&
-        prevProps.options.dueDate === nextProps.options.dueDate &&
-        prevProps.options.allDay === nextProps.options.allDay &&
-        prevProps.options.completed === nextProps.options.completed
-    );
-}
-
-export default memo(Task, areEqual);

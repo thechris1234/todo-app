@@ -81,20 +81,15 @@ export default function Index() {
     const search = searchParams.get('search');
     const status = searchParams.get('status');
 
-    const handleSearchChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-            const value = e.target.value;
+    const handleSearchChange = (value: string) => {
+        if (value.trim() === '') {
+            params.delete('search');
+        } else {
+            params.set('search', value);
+        }
 
-            if (value.trim() === '') {
-                params.delete('search');
-            } else {
-                params.set('search', value);
-            }
-
-            setSearchParams(params);
-        },
-        [params, setSearchParams],
-    );
+        setSearchParams(params);
+    };
 
     const handleStatusChange = (value: string) => {
         if (value === status) {
@@ -106,26 +101,13 @@ export default function Index() {
         setSearchParams(params);
     };
 
-    const memoizedIcons = {
-        chartPie: useMemo(() => <HiOutlineChartPie className="inline-block align-middle" />, []),
-        chartBar: useMemo(() => <HiOutlineChartBar className="inline-block align-middle" />, []),
-        calendar: useMemo(() => <HiOutlineCalendar className="inline-block align-middle" />, []),
-    };
+    const filteredTasks = demoTasks.filter((task) => {
+        const taskName = task.title.toLocaleLowerCase();
+        const matchesSearch = search ? taskName.includes(search.toLowerCase()) : true;
+        const matchesStatus = status ? task.status === status : true;
 
-    const filteredTasks = useMemo(() => {
-        return demoTasks.filter((task) => {
-            const taskName = task.title.toLowerCase();
-            const matchesSearch = search ? taskName.includes(search.toLowerCase()) : true;
-            const matchesStatus = status ? task.status === status : true;
-            return matchesSearch && matchesStatus;
-        });
-    }, [search, status]);
-
-    const handleCheckBoxChange = useCallback((task: TaskType) => {
-        return () => {
-            console.log(`Task '${task.title}' completed status now: ${!task.completed}`);
-        };
-    }, []);
+        return matchesSearch && matchesStatus;
+    });
 
     return (
         <>
@@ -149,8 +131,8 @@ export default function Index() {
                                     className="gap-2 border-transparent px-1 py-[0.1875rem] whitespace-nowrap sm:px-4"
                                     disableChevron
                                     open={isProfileMenuOpen}
-                                    onClick={useCallback(() => setIsProfileMenuOpen((prev) => !prev), [])}
-                                    onBlur={useCallback(() => setIsProfileMenuOpen(false), [])}
+                                    onClick={() => setIsProfileMenuOpen((prev) => !prev)}
+                                    onBlur={() => setIsProfileMenuOpen(false)}
                                 >
                                     <DropdownItem
                                         id="profile-menu-profile"
@@ -181,7 +163,7 @@ export default function Index() {
                                 placeholder="Search tasks..."
                                 icon="search"
                                 value={search ?? ''}
-                                onChange={handleSearchChange}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                             />
 
                             <Dropdown
@@ -220,15 +202,15 @@ export default function Index() {
                                             <span>Task</span>
                                         </th>
                                         <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
-                                            {memoizedIcons.chartPie}
+                                            <HiOutlineChartPie className="inline-block align-middle" />
                                             <span className="inline-block align-middle">Status</span>
                                         </th>
                                         <th className="hidden space-x-2 px-3 py-3 text-left font-medium text-gray-900 sm:block">
-                                            {memoizedIcons.chartBar}
+                                            <HiOutlineChartBar className="inline-block align-middle" />
                                             <span className="inline-block align-middle">Priority</span>
                                         </th>
                                         <th className="space-x-2 px-3 py-3 text-left font-medium whitespace-nowrap text-gray-900">
-                                            {memoizedIcons.calendar}
+                                            <HiOutlineCalendar className="inline-block align-middle" />
                                             <span className="inline-block align-middle">Due Date</span>
                                         </th>
                                         <th className="w-0 py-3 pr-4 pl-3 text-left font-medium text-gray-900">
@@ -249,7 +231,9 @@ export default function Index() {
                                                 <Task
                                                     key={task.id}
                                                     options={task}
-                                                    onCheckBoxChange={handleCheckBoxChange(task)}
+                                                    onCheckBoxChange={() => {
+                                                        console.log('asd');
+                                                    }}
                                                 />
                                             );
                                         })
@@ -284,7 +268,7 @@ export default function Index() {
                         type="textarea"
                         title="Description"
                         value={createTaskForm.desc}
-                        placeholder="Enter an optional description..."
+                        placeholder="Enter description... (optional)"
                         className="min-h-20"
                         onChange={(e) => dispatch({ type: 'SET_DESC', payload: e.target.value })}
                     />
@@ -334,6 +318,32 @@ export default function Index() {
                             );
                         })}
                     </Dropdown>
+
+                    <Input
+                        id="create-task-input-due-date"
+                        title="Due Date"
+                        type={createTaskForm.isAllDay ? 'date' : 'datetime-local'}
+                        value={createTaskForm.time}
+                        className="scheme-light"
+                        onChange={(e) => dispatch({ type: 'SET_TIME', payload: e.target.value })}
+                    />
+
+                    <div className="inline-flex items-center gap-2">
+                        <Checkbox
+                            id="create-task-checkbox-all-day"
+                            checked={createTaskForm.isAllDay}
+                            onChange={() => dispatch({ type: 'SET_IS_ALL_DAY', payload: !createTaskForm.isAllDay })}
+                        />
+                        <span className="text-sm text-gray-900">All-day event</span>
+                    </div>
+
+                    <Button
+                        text="Create Task"
+                        className="w-full bg-gray-900 hover:bg-gray-800"
+                        onClick={() => {
+                            console.log(createTaskForm);
+                        }}
+                    />
                 </div>
             </Modal>
         </>

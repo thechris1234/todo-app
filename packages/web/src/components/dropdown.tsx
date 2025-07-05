@@ -1,4 +1,4 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { cn } from '../utils/cn';
 
 import { AnimatePresence, motion } from 'motion/react';
@@ -61,7 +61,7 @@ const iconMap: Record<ValidIcon, IconType> = {
     signout: HiOutlineLogout,
 };
 
-function Dropdown(props: DropdownProps) {
+export default function Dropdown(props: DropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [menuStyles, setMenuStyles] = useState<React.CSSProperties>({});
 
@@ -192,7 +192,7 @@ function Dropdown(props: DropdownProps) {
     );
 }
 
-function DropdownItemComponent(props: DropdownItemProps) {
+export function DropdownItem(props: DropdownItemProps) {
     const icon = props.iconOptions?.icon;
     const IconComponent = icon ? iconMap[icon] : HiCheck;
 
@@ -235,35 +235,3 @@ function DropdownItemComponent(props: DropdownItemProps) {
         </div>
     );
 }
-
-const areButtonEqual = (prevProps: DropdownProps, nextProps: DropdownProps) => {
-    return (
-        prevProps.id === nextProps.id &&
-        prevProps.text === nextProps.text &&
-        prevProps.textStyle === nextProps.textStyle &&
-        prevProps.title === nextProps.title &&
-        prevProps.icon === nextProps.icon &&
-        prevProps.image?.src === nextProps.image?.src &&
-        prevProps.image?.className === nextProps.image?.className &&
-        prevProps.disableChevron === nextProps.disableChevron &&
-        prevProps.open === nextProps.open &&
-        prevProps.className === nextProps.className &&
-        prevProps.width === nextProps.width
-    );
-};
-
-export default memo(Dropdown, areButtonEqual);
-
-const areMenuEqual = (prevProps: DropdownItemProps, nextProps: DropdownItemProps) => {
-    return (
-        prevProps.id === nextProps.id &&
-        prevProps.text === nextProps.text &&
-        prevProps.selected === nextProps.selected &&
-        prevProps.customColors?.text === nextProps.customColors?.text &&
-        prevProps.customColors?.icon === nextProps.customColors?.icon &&
-        prevProps.iconOptions?.icon === nextProps.iconOptions?.icon &&
-        prevProps.iconOptions?.alwaysActive === nextProps.iconOptions?.alwaysActive
-    );
-};
-
-export const DropdownItem = memo(DropdownItemComponent, areMenuEqual);

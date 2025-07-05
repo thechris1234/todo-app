@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react';
 import { cn } from '../utils/cn';
 
 import type { IconType } from 'react-icons';
@@ -17,13 +16,13 @@ const iconMap: Record<ValidIcon, IconType> = {
     new: HiPlus,
 };
 
-function Button(props: ButtonProps) {
+export default function Button(props: ButtonProps) {
     const IconComponent = props.icon && iconMap[props.icon];
 
     return (
         <button
             className={cn(
-                'flex cursor-pointer items-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm whitespace-nowrap outline-offset-2 transition-colors hover:bg-purple-700 focus:outline focus:outline-gray-400',
+                'flex cursor-pointer items-center justify-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm whitespace-nowrap outline-offset-2 transition-colors hover:bg-purple-700 focus:outline focus:outline-gray-400',
                 props.className,
             )}
             onClick={props.onClick}
@@ -34,13 +33,3 @@ function Button(props: ButtonProps) {
         </button>
     );
 }
-
-const areEqual = (prevProps: ButtonProps, nextProps: ButtonProps) => {
-    return (
-        prevProps.text === nextProps.text &&
-        prevProps.icon === nextProps.icon &&
-        prevProps.className === nextProps.className
-    );
-};
-
-export default memo(Button, areEqual);
