@@ -77,19 +77,24 @@ export default function Index() {
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
-    const params = new URLSearchParams(searchParams);
+    const params = useMemo(() => new URLSearchParams(searchParams), [searchParams]);
     const search = searchParams.get('search');
     const status = searchParams.get('status');
 
-    const handleSearchChange = (value: string) => {
-        if (value.trim() === '') {
-            params.delete('search');
-        } else {
-            params.set('search', value);
-        }
+    const handleSearchChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const value = e.target.value;
 
-        setSearchParams(params);
-    };
+            if (value.trim() === '') {
+                params.delete('search');
+            } else {
+                params.set('search', value);
+            }
+
+            setSearchParams(params);
+        },
+        [params, setSearchParams],
+    );
 
     const handleStatusChange = (value: string) => {
         if (value === status) {
@@ -99,6 +104,12 @@ export default function Index() {
         }
 
         setSearchParams(params);
+    };
+
+    const memoizedIcons = {
+        chartPie: useMemo(() => <HiOutlineChartPie className="inline-block align-middle" />, []),
+        chartBar: useMemo(() => <HiOutlineChartBar className="inline-block align-middle" />, []),
+        calendar: useMemo(() => <HiOutlineCalendar className="inline-block align-middle" />, []),
     };
 
     const filteredTasks = useMemo(() => {
@@ -138,8 +149,8 @@ export default function Index() {
                                     className="gap-2 border-transparent px-1 py-[0.1875rem] whitespace-nowrap sm:px-4"
                                     disableChevron
                                     open={isProfileMenuOpen}
-                                    onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-                                    onBlur={() => setIsProfileMenuOpen(false)}
+                                    onClick={useCallback(() => setIsProfileMenuOpen((prev) => !prev), [])}
+                                    onBlur={useCallback(() => setIsProfileMenuOpen(false), [])}
                                 >
                                     <DropdownItem
                                         id="profile-menu-profile"
@@ -170,7 +181,7 @@ export default function Index() {
                                 placeholder="Search tasks..."
                                 icon="search"
                                 value={search ?? ''}
-                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onChange={handleSearchChange}
                             />
 
                             <Dropdown
@@ -178,8 +189,8 @@ export default function Index() {
                                 text={status ? StatusStyles[status as StatusTag]?.title : 'All Tasks'}
                                 icon="filter"
                                 open={isFilterMenuOpen}
-                                onClick={() => setIsFilterMenuOpen((prev) => !prev)}
-                                onBlur={() => setIsFilterMenuOpen(false)}
+                                onClick={useCallback(() => setIsFilterMenuOpen((prev) => !prev), [])}
+                                onBlur={useCallback(() => setIsFilterMenuOpen(false), [])}
                                 className="pl-4"
                                 width="w-full sm:w-48"
                             >
@@ -209,15 +220,15 @@ export default function Index() {
                                             <span>Task</span>
                                         </th>
                                         <th className="space-x-2 px-3 py-3 text-left font-medium text-gray-900">
-                                            <HiOutlineChartPie className="inline-block align-middle" />
+                                            {memoizedIcons.chartPie}
                                             <span className="inline-block align-middle">Status</span>
                                         </th>
                                         <th className="hidden space-x-2 px-3 py-3 text-left font-medium text-gray-900 sm:block">
-                                            <HiOutlineChartBar className="inline-block align-middle" />
+                                            {memoizedIcons.chartBar}
                                             <span className="inline-block align-middle">Priority</span>
                                         </th>
                                         <th className="space-x-2 px-3 py-3 text-left font-medium whitespace-nowrap text-gray-900">
-                                            <HiOutlineCalendar className="inline-block align-middle" />
+                                            {memoizedIcons.calendar}
                                             <span className="inline-block align-middle">Due Date</span>
                                         </th>
                                         <th className="w-0 py-3 pr-4 pl-3 text-left font-medium text-gray-900">
@@ -283,8 +294,8 @@ export default function Index() {
                         title="Status"
                         text={StatusStyles[createTaskForm.status as StatusTag]?.title}
                         open={isCreateTaskStatusMenuOpen}
-                        onClick={() => setIsCreateTaskStatusMenuOpen((prev) => !prev)}
-                        onBlur={() => setIsCreateTaskStatusMenuOpen(false)}
+                        onClick={useCallback(() => setIsCreateTaskStatusMenuOpen((prev) => !prev), [])}
+                        onBlur={useCallback(() => setIsCreateTaskStatusMenuOpen(false), [])}
                         className="w-full"
                     >
                         {Object.keys(StatusStyles).map((statusKey) => {
@@ -305,8 +316,8 @@ export default function Index() {
                         title="Priority"
                         text={PriorityStyles[createTaskForm.priority as PriorityTag]?.title}
                         open={isCreateTaskPriorityMenuOpen}
-                        onClick={() => setIsCreateTaskPriorityMenuOpen((prev) => !prev)}
-                        onBlur={() => setIsCreateTaskPriorityMenuOpen(false)}
+                        onClick={useCallback(() => setIsCreateTaskPriorityMenuOpen((prev) => !prev), [])}
+                        onBlur={useCallback(() => setIsCreateTaskPriorityMenuOpen(false), [])}
                         className="w-full"
                     >
                         {Object.keys(PriorityStyles).map((priorityKey) => {

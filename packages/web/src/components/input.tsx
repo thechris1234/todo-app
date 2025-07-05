@@ -1,8 +1,10 @@
-import { HiOutlineSearch, HiOutlineCalendar } from 'react-icons/hi';
+import { cn } from '../utils/cn';
+import { memo } from 'react';
 
 import type { IconType } from 'react-icons';
 import type { InputError } from '../types/input-type';
-import { cn } from '../utils/cn';
+
+import { HiOutlineSearch, HiOutlineCalendar } from 'react-icons/hi';
 
 type ValidIcon = 'search' | 'user' | 'password' | 'email';
 
@@ -21,14 +23,15 @@ type InputProps = {
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
-export default function Input(props: InputProps) {
-    const iconMap: Record<ValidIcon, IconType> = {
-        search: HiOutlineSearch,
-        user: HiOutlineCalendar,
-        password: HiOutlineCalendar,
-        email: HiOutlineCalendar,
-    };
-    const IconComponent = props.icon ? iconMap[props.icon] : undefined;
+const iconMap: Record<ValidIcon, IconType> = {
+    search: HiOutlineSearch,
+    user: HiOutlineCalendar,
+    password: HiOutlineCalendar,
+    email: HiOutlineCalendar,
+};
+
+function Input(props: InputProps) {
+    const IconComponent = props.icon && iconMap[props.icon];
 
     return (
         <div className={cn('w-full', props.width)}>
@@ -85,3 +88,21 @@ export default function Input(props: InputProps) {
         </div>
     );
 }
+
+function areEqual(prevProps: InputProps, nextProps: InputProps) {
+    return (
+        prevProps.id === nextProps.id &&
+        prevProps.type === nextProps.type &&
+        prevProps.title === nextProps.title &&
+        prevProps.placeholder === nextProps.placeholder &&
+        prevProps.value === nextProps.value &&
+        prevProps.icon === nextProps.icon &&
+        prevProps.width === nextProps.width &&
+        prevProps.error === nextProps.error &&
+        prevProps.errorText === nextProps.errorText &&
+        prevProps.maxLength === nextProps.maxLength &&
+        prevProps.className === nextProps.className
+    );
+}
+
+export default memo(Input, areEqual);

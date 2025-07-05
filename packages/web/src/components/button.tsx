@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { cn } from '../utils/cn';
 
 import type { IconType } from 'react-icons';
@@ -12,12 +13,12 @@ type ButtonProps = {
     onClick?: () => void;
 };
 
-export default function Button(props: ButtonProps) {
-    const iconMap: Record<ValidIcon, IconType> = {
-        new: HiPlus,
-    };
+const iconMap: Record<ValidIcon, IconType> = {
+    new: HiPlus,
+};
 
-    const IconComponent = props.icon ? iconMap[props.icon] : undefined;
+function Button(props: ButtonProps) {
+    const IconComponent = props.icon && iconMap[props.icon];
 
     return (
         <button
@@ -33,3 +34,13 @@ export default function Button(props: ButtonProps) {
         </button>
     );
 }
+
+const areEqual = (prevProps: ButtonProps, nextProps: ButtonProps) => {
+    return (
+        prevProps.text === nextProps.text &&
+        prevProps.icon === nextProps.icon &&
+        prevProps.className === nextProps.className
+    );
+};
+
+export default memo(Button, areEqual);
