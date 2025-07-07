@@ -1,9 +1,12 @@
+import { cn } from '../utils/cn';
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+
+import Dropdown, { DropdownItem } from '../components/dropdown';
 import Button from '../components/button';
 import Input from '../components/input';
-import { useLocation, useNavigate } from 'react-router';
-import { cn } from '../utils/cn';
-import Dropdown, { DropdownItem } from '../components/dropdown';
+import i18n from '../localization';
 
 type TAuthForm = {
     name: string;
@@ -13,6 +16,7 @@ type TAuthForm = {
 };
 
 export default function Auth() {
+    const { t } = useTranslation();
     const { pathname } = useLocation();
     const navigate = useNavigate();
 
@@ -28,8 +32,8 @@ export default function Auth() {
     });
 
     const handleFormChange = (page: string) => {
-        if (page === 'register') {
-            navigate(`./sign-up`);
+        if (page === 'signup') {
+            navigate(`./signup`);
             return;
         }
 
@@ -40,8 +44,8 @@ export default function Auth() {
         <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
             <div className="w-full max-w-md rounded-lg border bg-white p-6 shadow-2xs">
                 <div className="space-y-1.5 text-center">
-                    <h1 className="text-xl font-bold text-gray-900">Welcome</h1>
-                    <span className="text-sm text-gray-600">Sign in to your account or create a new one</span>
+                    <h1 className="text-xl font-bold text-gray-900">{t('auth.title')}</h1>
+                    <span className="text-sm text-gray-600">{t('auth.description')}</span>
                 </div>
 
                 <div className="mt-6 grid h-10 w-full grid-cols-2 items-center justify-center gap-1 rounded-md bg-gray-100 p-1">
@@ -58,7 +62,7 @@ export default function Auth() {
                             'bg-white text-gray-900': isRegister,
                         })}
                         onClick={() => {
-                            handleFormChange('register');
+                            handleFormChange('signup');
                         }}
                     />
                 </div>
