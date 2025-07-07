@@ -252,7 +252,7 @@ export default function Index() {
                 }}
             >
                 <div className="w-full max-w-lg space-y-4 rounded-md bg-white p-4">
-                    <h1 className="text-xl font-bold text-gray-900 sm:text-lg">Create New Task</h1>
+                    <h1 className="text-md font-bold text-gray-900 sm:text-lg">Create New Task</h1>
 
                     <Input
                         id="create-task-input-name"
