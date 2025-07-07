@@ -14,9 +14,10 @@ import {
     HiOutlineTrash,
     HiOutlineUser,
     HiOutlineLogout,
+    HiOutlineTranslate,
 } from 'react-icons/hi';
 
-type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash' | 'signout' | 'user';
+type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash' | 'signout' | 'user' | 'translate';
 
 type DropdownProps = {
     id?: string;
@@ -59,6 +60,7 @@ const iconMap: Record<ValidIcon, IconType> = {
     trash: HiOutlineTrash,
     user: HiOutlineUser,
     signout: HiOutlineLogout,
+    translate: HiOutlineTranslate,
 };
 
 export default function Dropdown(props: DropdownProps) {

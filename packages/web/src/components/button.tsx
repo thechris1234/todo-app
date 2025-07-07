@@ -22,14 +22,14 @@ export default function Button(props: ButtonProps) {
     return (
         <button
             className={cn(
-                'flex cursor-pointer items-center justify-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm whitespace-nowrap outline-offset-2 transition-colors hover:bg-purple-700 focus:outline focus:outline-gray-400',
+                'flex cursor-pointer items-center justify-center gap-3.5 rounded-md bg-purple-600 px-4 py-2.5 text-sm font-medium whitespace-nowrap text-gray-100 outline-offset-2 transition-colors hover:bg-purple-700 focus:outline focus:outline-gray-400',
                 props.className,
             )}
             onClick={props.onClick}
         >
             {props.icon && IconComponent && <IconComponent className="size-4" />}
 
-            <span className="text-gray-100">{props.text}</span>
+            {props.text}
         </button>
     );
 }
