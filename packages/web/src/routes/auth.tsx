@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import Dropdown, { DropdownItem } from '../components/dropdown';
 import Button from '../components/button';
 import Input from '../components/input';
-import i18n from '../localization';
 
 type TAuthForm = {
     name: string;
