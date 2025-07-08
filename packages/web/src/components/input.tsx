@@ -113,6 +113,7 @@ export default function Input(props: InputProps) {
                     <div
                         className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                         onClick={props.valueVisible.onClick}
+                        onMouseDown={(e) => e.preventDefault()}
                     >
                         <EyeComponent className="size-4 text-gray-400" />
                     </div>

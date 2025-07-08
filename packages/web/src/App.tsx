@@ -1,21 +1,20 @@
 import { useEffect } from 'react';
-import { Outlet, useParams } from 'react-router';
-
-import { supportedLocales } from './types/locale-type';
+import { Outlet, useLocation } from 'react-router';
+import { DEFAULT_LANG, getLanguageFromPath, isSupportedLocale } from './utils/language';
 import i18n from './localization';
 
 export default function App() {
-    const { lang } = useParams();
+    const { pathname } = useLocation();
 
     useEffect(() => {
-        const languageToUse = supportedLocales.includes(lang ?? '') ? lang! : 'hu';
+        const pathLang = getLanguageFromPath(pathname);
 
-        if (i18n.language !== languageToUse) {
-            i18n.changeLanguage(languageToUse).then(() => {
-                console.log('Language changed to:', i18n.language);
-            });
+        if (isSupportedLocale(pathLang) && i18n.language !== pathLang) {
+            i18n.changeLanguage(pathLang);
+        } else if (!isSupportedLocale(pathLang) && i18n.language !== DEFAULT_LANG) {
+            i18n.changeLanguage(DEFAULT_LANG);
         }
-    }, [lang]);
+    }, [pathname]);
 
     return (
         <>

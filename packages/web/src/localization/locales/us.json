@@ -1,0 +1,24 @@
+{
+    "auth": {
+        "title": "Welcome back!",
+        "description": "Sign in to your account or create a new one",
+        "button": {
+            "signIn": "Sign In",
+            "signUp": "Sign Up"
+        },
+        "input": {
+            "title": {
+                "name": "Name",
+                "email": "Email",
+                "password": "Password",
+                "confirmPassword": "Confirm Password"
+            },
+            "placeholder": {
+                "name": "Enter your name",
+                "email": "Enter your email",
+                "password": "Enter your password",
+                "confirmPassword": "Confirm your password"
+            }
+        }
+    }
+}

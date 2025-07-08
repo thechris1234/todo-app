@@ -3,7 +3,9 @@ import { cn } from '../utils/cn';
 
 import { AnimatePresence, motion } from 'motion/react';
 
+import type { ValidIcon } from '../types/icon-type';
 import type { IconType } from 'react-icons';
+
 import {
     HiCheck,
     HiOutlineFilter,
@@ -17,7 +19,9 @@ import {
     HiOutlineTranslate,
 } from 'react-icons/hi';
 
-type ValidIcon = 'filter' | 'dots' | 'edit' | 'trash' | 'signout' | 'user' | 'translate';
+import FlagHU from '/locale/hu.svg';
+import FlagGB from '/locale/gb.svg';
+import FlagUS from '/locale/us.svg';
 
 type DropdownProps = {
     id?: string;
@@ -49,11 +53,12 @@ type DropdownItemProps = {
     iconOptions?: {
         icon?: ValidIcon;
         alwaysActive?: boolean;
+        localSVG?: boolean;
     };
     onClick?: () => void;
 };
 
-const iconMap: Record<ValidIcon, IconType> = {
+const iconMap: Record<ValidIcon, IconType | string> = {
     filter: HiOutlineFilter,
     dots: HiOutlineDotsHorizontal,
     edit: HiOutlinePencilAlt,
@@ -61,6 +66,9 @@ const iconMap: Record<ValidIcon, IconType> = {
     user: HiOutlineUser,
     signout: HiOutlineLogout,
     translate: HiOutlineTranslate,
+    'flag-hu': FlagHU,
+    'flag-gb': FlagGB,
+    'flag-us': FlagUS,
 };
 
 export default function Dropdown(props: DropdownProps) {
@@ -211,15 +219,28 @@ export function DropdownItem(props: DropdownItemProps) {
                 props.onClick?.();
             }}
         >
-            <IconComponent
-                className={cn(
-                    'size-4 text-gray-900',
-                    {
-                        'text-transparent': !props.selected && !props.iconOptions?.alwaysActive,
-                    },
-                    props.customColors?.icon,
-                )}
-            />
+            {props.iconOptions?.icon && props.iconOptions.localSVG ? (
+                <img
+                    src={IconComponent as string}
+                    className={cn(
+                        'w-4 text-gray-900',
+                        {
+                            'text-transparent': !props.selected && !props.iconOptions?.alwaysActive,
+                        },
+                        props.customColors?.icon,
+                    )}
+                />
+            ) : (
+                <IconComponent
+                    className={cn(
+                        'size-4 text-gray-900',
+                        {
+                            'text-transparent': !props.selected && !props.iconOptions?.alwaysActive,
+                        },
+                        props.customColors?.icon,
+                    )}
+                />
+            )}
 
             <span
                 id={'menu-item-' + props.id}
