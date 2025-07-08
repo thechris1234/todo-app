@@ -1,6 +1,24 @@
 {
     "auth": {
         "title": "Üdv újra!",
-        "description": "Jelentkezz be"
+        "description": "Jelentkezz be a fiókodba, vagy hozz létre egy újat",
+        "button": {
+            "signIn": "Bejelentkezés",
+            "signUp": "Regisztráció"
+        },
+        "input": {
+            "title": {
+                "name": "Név",
+                "email": "Email",
+                "password": "Jelszó",
+                "confirmPassword": "Jelszó megerősítése"
+            },
+            "placeholder": {
+                "name": "Add meg a neved",
+                "email": "Add meg az email címed",
+                "password": "Add meg a jelszavad",
+                "confirmPassword": "Erősítsd meg a jelszavad"
+            }
+        }
     }
 }

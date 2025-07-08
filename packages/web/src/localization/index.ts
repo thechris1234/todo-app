@@ -1,44 +1,35 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import { DEFAULT_LANG, FALLBACK_LANG } from '../utils/language';
+
 import translationHu from './locales/hu.json';
-import translationEn from './locales/en.json';
-import { supportedLocales } from '../types/locale-type';
+import translationGb from './locales/gb.json';
+import translationUs from './locales/us.json';
 
 const resources = {
     hu: { translation: translationHu },
-    en: { translation: translationEn },
+    gb: { translation: translationGb },
+    us: { translation: translationUs },
 };
 
-function initI18n() {
-    const urlLang = window.location.pathname.split('/')[1];
-    const fallbackLang = 'en';
-    const defaultLang = 'hu';
+let initialized = false;
 
-    let languageToUse: string;
-
-    if (!urlLang) {
-        // pl. / vagy üres path
-        languageToUse = defaultLang;
-    } else if (supportedLocales.includes(urlLang)) {
-        languageToUse = urlLang;
-    } else if (/^[a-z]{2}$/.test(urlLang)) {
-        languageToUse = fallbackLang;
-    } else {
-        languageToUse = defaultLang;
-    }
+export function initI18n() {
+    if (initialized) return i18n;
+    initialized = true;
 
     i18n.use(initReactI18next).init({
         compatibilityJSON: 'v4',
         resources,
-        lng: languageToUse,
-        fallbackLng: fallbackLang,
+        lng: DEFAULT_LANG,
+        fallbackLng: FALLBACK_LANG,
         interpolation: {
             escapeValue: false,
         },
     });
-}
 
-initI18n();
+    return i18n;
+}
 
 export default i18n;
