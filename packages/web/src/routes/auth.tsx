@@ -39,9 +39,17 @@ export default function Auth() {
         password: '',
         confirmPassword: '',
     });
+    const [authFormError, setAuthFormError] = useState<Record<keyof TAuthForm, string | null>>({
+        name: null,
+        email: null,
+        password: null,
+        confirmPassword: null,
+    });
 
     const handleFormChange = (page: string) => {
+        setIsDropdownOpen(false);
         setAuthForm({ name: '', email: '', password: '', confirmPassword: '' });
+        setAuthFormError({ name: null, email: null, password: null, confirmPassword: null });
 
         if (page === 'signup') {
             navigate(`./signup`);
@@ -49,6 +57,92 @@ export default function Auth() {
         }
 
         navigate(`/auth/login`);
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const handleInputChange = (field: keyof TAuthForm, value: string) => {
+        setAuthForm((prev) => ({ ...prev, [field]: value }));
+
+        if (field === 'name' && isRegister && value.length >= 3) {
+            setAuthFormError((prev) => ({ ...prev, name: null }));
+        }
+
+        if (field === 'email') {
+            if (emailRegex.test(value)) {
+                setAuthFormError((prev) => ({ ...prev, email: null }));
+            }
+        }
+
+        if (field === 'password' && value.length >= 10) {
+            setAuthFormError((prev) => ({ ...prev, password: null }));
+        }
+
+        if (field === 'confirmPassword' && value === authForm.password) {
+            setAuthFormError((prev) => ({ ...prev, confirmPassword: null }));
+        }
+    };
+
+    const handleInputBlur = (field: keyof TAuthForm, value: string) => {
+        if (field === 'name' && isRegister && value.length < 3) {
+            setAuthFormError((prev) => ({ ...prev, name: 'auth.input.error.nameLength' }));
+        }
+
+        if (field === 'email') {
+            if (!emailRegex.test(value)) {
+                setAuthFormError((prev) => ({ ...prev, email: 'auth.input.error.invalidEmail' }));
+            }
+        }
+
+        if (field === 'password' && value.length < 10) {
+            setAuthFormError((prev) => ({ ...prev, password: 'auth.input.error.passwordLength' }));
+        }
+
+        if (field === 'confirmPassword' && value !== authForm.password) {
+            setAuthFormError((prev) => ({
+                ...prev,
+                confirmPassword: 'auth.input.error.passwordMatch',
+            }));
+        }
+    };
+
+    const validateForm = (): boolean => {
+        const errors: Record<keyof TAuthForm, string> = {
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        };
+
+        if (isRegister && authForm.name.trim().length < 3) {
+            errors.name = 'auth.input.error.nameLength';
+        }
+
+        if (!emailRegex.test(authForm.email)) {
+            errors.email = 'auth.input.error.invalidEmail';
+        }
+
+        if (authForm.password.length < 10) {
+            errors.password = 'auth.input.error.passwordLength';
+        }
+
+        if (isRegister && authForm.password !== authForm.confirmPassword) {
+            errors.confirmPassword = 'auth.input.error.passwordMatch';
+        }
+
+        setAuthFormError(errors);
+
+        return Object.values(errors).every((e) => e === '');
+    };
+
+    const handleFormSubmit = () => {
+        const isValid = validateForm();
+
+        if (!isValid) {
+            return;
+        }
+
+        console.log('Form valid! Submitting:', authForm);
     };
 
     return (
@@ -80,7 +174,7 @@ export default function Auth() {
                     />
                 </div>
 
-                <form className="mt-2 space-y-4">
+                <div className="mt-2 space-y-4">
                     {isRegister && (
                         <Input
                             id="auth-input-name"
@@ -89,7 +183,9 @@ export default function Auth() {
                             title={t('auth.input.title.name')}
                             placeholder={t('auth.input.placeholder.name')}
                             value={authForm.name}
-                            onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                            errorMessage={t(authFormError.name ?? '')}
+                            onChange={(e) => handleInputChange('name', e.currentTarget.value)}
+                            onBlur={(e) => handleInputBlur('name', e.currentTarget.value)}
                         />
                     )}
 
@@ -100,7 +196,9 @@ export default function Auth() {
                         title={t('auth.input.title.email')}
                         placeholder={t('auth.input.placeholder.email')}
                         value={authForm.email}
-                        onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                        errorMessage={t(authFormError.email ?? '')}
+                        onChange={(e) => handleInputChange('email', e.currentTarget.value)}
+                        onBlur={(e) => handleInputBlur('email', e.currentTarget.value)}
                     />
 
                     <Input
@@ -116,7 +214,9 @@ export default function Auth() {
                                 setShowPassword((prev) => !prev);
                             },
                         }}
-                        onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                        errorMessage={t(authFormError.password ?? '')}
+                        onChange={(e) => handleInputChange('password', e.currentTarget.value)}
+                        onBlur={(e) => handleInputBlur('password', e.currentTarget.value)}
                     />
 
                     {isRegister && (
@@ -133,12 +233,18 @@ export default function Auth() {
                                     setShowPassword((prev) => !prev);
                                 },
                             }}
-                            onChange={(e) => setAuthForm({ ...authForm, confirmPassword: e.target.value })}
+                            errorMessage={t(authFormError.confirmPassword ?? '')}
+                            onChange={(e) => handleInputChange('confirmPassword', e.currentTarget.value)}
+                            onBlur={(e) => handleInputBlur('confirmPassword', e.currentTarget.value)}
                         />
                     )}
 
-                    <Button text={t('auth.button.signIn')} className="w-full" />
-                </form>
+                    <Button
+                        text={isRegister ? t('auth.button.signUp') : t('auth.button.signIn')}
+                        className="w-full"
+                        onClick={handleFormSubmit}
+                    />
+                </div>
             </div>
 
             <Dropdown
@@ -147,6 +253,7 @@ export default function Auth() {
                 className="rounded-sm border-0 bg-transparent p-0 pl-1 uppercase hover:bg-transparent"
                 open={isDropdownOpen}
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
+                onBlur={() => setIsDropdownOpen(false)}
             >
                 {supportedLocales.map((lang) => {
                     const locale = localeConfigs[lang];

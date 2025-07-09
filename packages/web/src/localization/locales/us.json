@@ -18,6 +18,12 @@
                 "email": "Enter your email",
                 "password": "Enter your password",
                 "confirmPassword": "Confirm your password"
+            },
+            "error": {
+                "nameLength": "Name must be at least 3 characters long.",
+                "invalidEmail": "Invalid email address.",
+                "passwordLength": "Password must be at least 10 characters long.",
+                "passwordMatch": "Passwords do not match."
             }
         }
     }

@@ -1,7 +1,6 @@
 import { cn } from '../utils/cn';
 
 import type { IconType } from 'react-icons';
-import type { InputError } from '../types/input-type';
 
 import {
     HiOutlineSearch,
@@ -26,11 +25,11 @@ type InputProps = {
     };
     icon?: ValidIcon;
     width?: boolean;
-    error?: InputError;
-    errorText?: string;
+    errorMessage?: string;
     maxLength?: number;
     className?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 };
 
 const iconMap: Record<ValidIcon, IconType> = {
@@ -57,7 +56,11 @@ export default function Input(props: InputProps) {
             <div className="relative block">
                 {props.icon && IconComponent && (
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <IconComponent className="size-4 text-gray-400" />
+                        <IconComponent
+                            className={cn('size-4 text-gray-400', {
+                                'text-red-400': props.errorMessage,
+                            })}
+                        />
                     </div>
                 )}
 
@@ -67,11 +70,13 @@ export default function Input(props: InputProps) {
                         placeholder={props.placeholder}
                         value={props.value}
                         onChange={props.onChange}
+                        onBlur={props.onBlur}
                         maxLength={props.maxLength}
                         className={cn(
                             'block w-full rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors placeholder:text-gray-400 placeholder:italic focus:outline-gray-400',
                             {
                                 'pl-10': props.icon,
+                                'border-red-200 text-red-500 placeholder:text-red-300': props.errorMessage,
                             },
                             props.className,
                         )}
@@ -85,10 +90,12 @@ export default function Input(props: InputProps) {
                             'block w-full rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors placeholder:text-gray-400 placeholder:italic focus:outline-gray-400',
                             {
                                 'pl-10': props.icon,
+                                'border-red-200 text-red-500 placeholder:text-red-300': props.errorMessage,
                             },
                             props.className,
                         )}
                         onChange={props.onChange}
+                        onBlur={props.onBlur}
                     />
                 ) : (
                     <input
@@ -97,12 +104,14 @@ export default function Input(props: InputProps) {
                         placeholder={props.placeholder}
                         value={props.value}
                         onChange={props.onChange}
+                        onBlur={props.onBlur}
                         maxLength={props.maxLength}
                         className={cn(
                             'block w-full rounded-md border border-gray-200 bg-transparent py-2.5 pr-3 pl-3 text-sm text-gray-900 outline outline-transparent transition-colors placeholder:text-gray-400 placeholder:italic focus:outline-gray-400',
                             {
                                 'pl-10': props.icon,
                                 'pr-10': props.valueVisible,
+                                'border-red-300 text-red-500 placeholder:text-red-300': props.errorMessage,
                             },
                             props.className,
                         )}
@@ -120,8 +129,14 @@ export default function Input(props: InputProps) {
                 )}
             </div>
 
-            {props.error && props.errorText && (
-                <span className="invisible peer-invalid:visible ...">{props.errorText}</span>
+            {props.errorMessage && (
+                <span
+                    className={cn('text-xs text-red-400 opacity-0 transition-opacity duration-250', {
+                        'opacity-100': props.errorMessage,
+                    })}
+                >
+                    {props.errorMessage}
+                </span>
             )}
         </div>
     );

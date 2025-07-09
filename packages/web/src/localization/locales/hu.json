@@ -18,6 +18,12 @@
                 "email": "Add meg az email címed",
                 "password": "Add meg a jelszavad",
                 "confirmPassword": "Erősítsd meg a jelszavad"
+            },
+            "error": {
+                "nameLength": "A névnek legalább 3 karakter hosszúnak kell lennie.",
+                "invalidEmail": "Érvénytelen e-mail cím.",
+                "passwordLength": "A jelszónak legalább 10 karakterből kell állnia.",
+                "passwordMatch": "A jelszavak nem egyeznek."
             }
         }
     }
