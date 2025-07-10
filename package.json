@@ -23,8 +23,5 @@
   "packageManager": "pnpm@10.12.4",
   "engines": {
     "node": ">=22"
-  },
-  "dependencies": {
-    "todo-app": "link:"
   }
 }
