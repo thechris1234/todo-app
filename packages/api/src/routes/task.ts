@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 
 import Task from '../models/task';
-import { authMiddleware } from '../utils/auth';
+import { authenticateToken } from '../utils/auth';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ interface AuthenticatedRequest extends Request {
     userId?: string;
 }
 
-router.get('/', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get('/', authenticateToken, async (req: AuthenticatedRequest, res: Response) => {
     try {
         const tasks = await Task.find({ user: req.userId });
         res.status(200).json(tasks);

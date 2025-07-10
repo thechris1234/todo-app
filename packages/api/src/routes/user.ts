@@ -20,7 +20,10 @@ router.post('/create', async (req: Request, res: Response) => {
     if (!password) missingFields.push('password');
 
     if (missingFields.length > 0) {
-        res.status(400).json({ message: `Missing required fields: ${missingFields.join(', ')}.` });
+        res.status(400).json({
+            message: 'Request failed.',
+            error: `Missing required fields: ${missingFields.join(', ')}.`,
+        });
         return;
     }
 
@@ -28,7 +31,10 @@ router.post('/create', async (req: Request, res: Response) => {
         const emailInUse = await User.findOne({ email });
 
         if (emailInUse) {
-            res.status(400).json({ message: 'Email already in use.' });
+            res.status(400).json({
+                message: 'Request failed.',
+                error: 'Provided email address is already in use.',
+            });
             return;
         }
 

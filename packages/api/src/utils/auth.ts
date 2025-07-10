@@ -15,32 +15,23 @@ export const verifyToken = (token: string) => {
     return verify(token, JWT_SECRET);
 };
 
-interface AuthenticatedRequest extends Request {
-    userId?: string;
+interface RequestWithUser extends Request {
+    user?: any;
 }
 
-export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const authHeader = req.headers['authorization'];
+export const authenticateToken = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        res.status(401).json({ message: 'Authorization token missing or malformed.' });
+    if (!token) {
+        res.status(401).json({ message: 'Access denied.', error: 'No token provided.' });
         return;
     }
 
-    const token = authHeader.split(' ')[1];
-
     try {
-        const decoded = verifyToken(token) as { userId: string };
-
-        if (!decoded?.userId) {
-            res.status(401).json({ message: 'Invalid token payload.' });
-            return;
-        }
-
-        req.userId = decoded.userId;
+        req.user = verifyToken(token);
         next();
-    } catch {
-        res.status(401).json({ message: 'Invalid or expired token.' });
+    } catch (error) {
+        res.status(403).json({ message: 'Access denied.', error: 'Invalid token.' });
         return;
     }
 };
