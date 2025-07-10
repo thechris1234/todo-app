@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    dependencies:
+      todo-app:
+        specifier: 'link:'
+        version: 'link:'
 
   packages/api:
     dependencies:

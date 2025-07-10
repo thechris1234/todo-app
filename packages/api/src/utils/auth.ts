@@ -1,4 +1,4 @@
-import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { JwtPayload, sign, SignOptions, verify } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
@@ -7,8 +7,8 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined in environment variables');
 }
 
-export const generateToken = (userId: string): string => {
-    return sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+export const generateToken = (payload: object, options: SignOptions): string => {
+    return sign(payload, JWT_SECRET, options);
 };
 
 export const verifyToken = (token: string) => {
