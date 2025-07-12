@@ -23,7 +23,8 @@
                 "nameLength": "Name must be at least 3 characters long.",
                 "invalidEmail": "Invalid email address.",
                 "passwordLength": "Password must be at least 10 characters long.",
-                "passwordMatch": "Passwords do not match."
+                "passwordMatch": "Passwords do not match.",
+                "confirmPasswordMissing": "Confirm Password field cannot be empty."
             }
         }
     }

@@ -3,6 +3,9 @@ import { hash } from 'bcryptjs';
 
 import User from '../models/user';
 import { generateToken } from '../utils/auth';
+import { userCreateSchema } from '@todoapp/shared/validation/user';
+
+import { formatZodError, translateZodErrors } from '@todoapp/shared/utils/zod-utils';
 
 const router = Router();
 
@@ -12,20 +15,20 @@ router.post('/create', async (req: Request, res: Response) => {
         return;
     }
 
-    const { name, email, password } = req.body;
+    const validation = await userCreateSchema.safeParseAsync(req.body);
 
-    const missingFields = [];
-    if (!name) missingFields.push('name');
-    if (!email) missingFields.push('email');
-    if (!password) missingFields.push('password');
+    if (!validation.success) {
+        const translated = translateZodErrors(validation.error);
+        const errors = formatZodError(translated);
 
-    if (missingFields.length > 0) {
         res.status(400).json({
-            message: 'Request failed.',
-            error: `Missing required fields: ${missingFields.join(', ')}.`,
+            message: 'Validation failed.',
+            errors,
         });
         return;
     }
+
+    const { name, email, password } = req.body;
 
     try {
         const emailInUse = await User.findOne({ email });
@@ -64,7 +67,6 @@ router.post('/create', async (req: Request, res: Response) => {
             token,
         });
     } catch (e) {
-        console.error('[API - Error]:', e);
         res.status(500).json({ message: 'Server error while creating user.' });
         return;
     }

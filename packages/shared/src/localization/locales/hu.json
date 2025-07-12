@@ -23,7 +23,8 @@
                 "nameLength": "A névnek legalább 3 karakter hosszúnak kell lennie.",
                 "invalidEmail": "Érvénytelen e-mail cím.",
                 "passwordLength": "A jelszónak legalább 10 karakterből kell állnia.",
-                "passwordMatch": "A jelszavak nem egyeznek."
+                "passwordMatch": "A jelszavak nem egyeznek.",
+                "confirmPasswordMissing": "A jelszó megerősítése mező nem lehet üres."
             }
         }
     }

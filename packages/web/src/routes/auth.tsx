@@ -7,11 +7,16 @@ import Dropdown, { DropdownItem } from '../components/dropdown';
 import Button from '../components/button';
 import Input from '../components/input';
 
-import { localeConfigs, supportedLocales } from '../types/locale-type';
 import type { ValidIcon } from '../types/icon-type';
+import { localeConfigs, supportedLocales } from '@todoapp/shared/types/locale-type';
 
-import { changeLanguage, DEFAULT_LANG, getLanguageFromPath } from '../utils/language';
-import i18n from '../localization';
+import i18n from '@todoapp/shared/localization';
+import { changeLanguage, DEFAULT_LANG, getLanguageFromPath } from '@todoapp/shared/utils/language';
+
+import { userCreateSchema } from '@todoapp/shared/validation/user';
+import { ZodError } from '@todoapp/shared/utils/zod-utils';
+
+import axios from 'axios';
 
 type TAuthForm = {
     name: string;
@@ -59,90 +64,69 @@ export default function Auth() {
         navigate(`/auth/login`);
     };
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const handleInputChange = (field: keyof TAuthForm, value: string) => {
         setAuthForm((prev) => ({ ...prev, [field]: value }));
-
-        if (field === 'name' && isRegister && value.length >= 3) {
-            setAuthFormError((prev) => ({ ...prev, name: null }));
-        }
-
-        if (field === 'email') {
-            if (emailRegex.test(value)) {
-                setAuthFormError((prev) => ({ ...prev, email: null }));
-            }
-        }
-
-        if (field === 'password' && value.length >= 10) {
-            setAuthFormError((prev) => ({ ...prev, password: null }));
-        }
-
-        if (field === 'confirmPassword' && value === authForm.password) {
-            setAuthFormError((prev) => ({ ...prev, confirmPassword: null }));
-        }
     };
 
     const handleInputBlur = (field: keyof TAuthForm, value: string) => {
-        if (field === 'name' && isRegister && value.length < 3) {
-            setAuthFormError((prev) => ({ ...prev, name: 'auth.input.error.nameLength' }));
-        }
-
-        if (field === 'email') {
-            if (!emailRegex.test(value)) {
-                setAuthFormError((prev) => ({ ...prev, email: 'auth.input.error.invalidEmail' }));
+        try {
+            userCreateSchema.pick({ [field]: true }).parse({ [field]: value });
+            setAuthFormError((prev) => ({ ...prev, [field]: null }));
+        } catch (err) {
+            if (err instanceof ZodError) {
+                setAuthFormError((prev) => ({
+                    ...prev,
+                    [field]: err.issues[0]?.message ?? null,
+                }));
             }
-        }
-
-        if (field === 'password' && value.length < 10) {
-            setAuthFormError((prev) => ({ ...prev, password: 'auth.input.error.passwordLength' }));
-        }
-
-        if (field === 'confirmPassword' && value !== authForm.password) {
-            setAuthFormError((prev) => ({
-                ...prev,
-                confirmPassword: 'auth.input.error.passwordMatch',
-            }));
         }
     };
 
     const validateForm = (): boolean => {
-        const errors: Record<keyof TAuthForm, string> = {
-            name: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-        };
+        try {
+            userCreateSchema.parse(authForm);
+            setAuthFormError({ name: null, email: null, password: null, confirmPassword: null });
+            return true;
+        } catch (err) {
+            if (err instanceof ZodError) {
+                const fieldErrors: Partial<Record<keyof TAuthForm, string>> = {};
+                err.issues.forEach((e) => {
+                    const key = e.path[0];
+                    if (typeof key === 'string' || typeof key === 'number') {
+                        const field = key as keyof TAuthForm;
+                        fieldErrors[field] = e.message;
+                    }
+                });
 
-        if (isRegister && authForm.name.trim().length < 3) {
-            errors.name = 'auth.input.error.nameLength';
+                setAuthFormError((prev) => ({ ...prev, ...fieldErrors }));
+            }
+            return false;
         }
-
-        if (!emailRegex.test(authForm.email)) {
-            errors.email = 'auth.input.error.invalidEmail';
-        }
-
-        if (authForm.password.length < 10) {
-            errors.password = 'auth.input.error.passwordLength';
-        }
-
-        if (isRegister && authForm.password !== authForm.confirmPassword) {
-            errors.confirmPassword = 'auth.input.error.passwordMatch';
-        }
-
-        setAuthFormError(errors);
-
-        return Object.values(errors).every((e) => e === '');
     };
 
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async () => {
         const isValid = validateForm();
 
         if (!isValid) {
             return;
         }
 
-        console.log('Form valid! Submitting:', authForm);
+        try {
+            const response = await axios.post('/api/user/create', {
+                name: authForm.name,
+                email: authForm.email,
+                password: authForm.password,
+                confirmPassword: authForm.confirmPassword,
+            });
+
+            console.log('User created successfully:', response.data);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                console.error('API Error:', error.response?.data);
+            } else {
+                console.error('Unexpected error:', error);
+            }
+        }
     };
 
     return (

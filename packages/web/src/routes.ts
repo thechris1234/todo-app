@@ -1,14 +1,20 @@
 import { createBrowserRouter, redirect } from 'react-router';
 import type { LoaderFunctionArgs } from 'react-router';
 
-import { DEFAULT_LANG, FALLBACK_LANG, getBrowserLocale, isSupportedLocale, stripLangFromPath } from './utils/language';
+import {
+    DEFAULT_LANG,
+    FALLBACK_LANG,
+    getBrowserLocale,
+    isSupportedLocale,
+    stripLangFromPath,
+} from '@todoapp/shared/utils/language';
 
 import NotFound from './routes/not-found';
 import App from './App';
 import Index from './routes/index';
 import Profile from './routes/profile';
 import Auth from './routes/auth';
-import i18n, { initI18n } from './localization';
+import i18n, { initI18n } from '@todoapp/shared/localization';
 
 initI18n();
 

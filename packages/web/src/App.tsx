@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
-import { DEFAULT_LANG, getLanguageFromPath, isSupportedLocale } from './utils/language';
-import i18n from './localization';
+import { DEFAULT_LANG, getLanguageFromPath, isSupportedLocale } from '@todoapp/shared/utils/language';
+import i18n from '@todoapp/shared/localization';
 
 export default function App() {
     const { pathname } = useLocation();

@@ -8,7 +8,7 @@
     "main": "main.ts",
     "scripts": {
         "[-] Backend Development": "",
-        "dev:api": "nodemon src/main.ts"
+        "dev:api": "nodemon --require tsconfig-paths/register src/main.ts"
     },
     "prettier": {
         "arrowParens": "always",
@@ -19,7 +19,9 @@
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
+        "cors": "^2.8.5",
         "express": "^5.1.0",
+        "helmet": "^8.1.0",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.16.2"
     },
@@ -31,6 +33,7 @@
         "dotenv": "^17.0.0",
         "nodemon": "^3.1.10",
         "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "~5.8.3"
     },
     "packageManager": "pnpm@10.12.4"
